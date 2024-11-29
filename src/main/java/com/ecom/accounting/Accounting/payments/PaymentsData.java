@@ -17,6 +17,7 @@ public class PaymentsData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Long sellerId;
     private String transactionId;
     private LocalDateTime paymentDate;
     private BigDecimal orderAmount;

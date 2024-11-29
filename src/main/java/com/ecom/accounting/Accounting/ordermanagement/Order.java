@@ -1,9 +1,6 @@
 package com.ecom.accounting.Accounting.ordermanagement;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,10 +9,13 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
+@Table(name = "\"order\"") // Escapes the table name
 public class Order {
     @Id
     private Long orderId;
+    private Long sellerId;
     private LocalDateTime orderDate;
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private String sku;
     private LocalDateTime dispatchDate;

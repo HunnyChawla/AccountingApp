@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,12 +16,14 @@ import java.time.LocalDateTime;
 @Entity
 @Setter
 @Getter
-public class MeeshoPaymentData {
+public class MeeshoPaymentData implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String sellerId;
     private String subOrderNo;
     private LocalDateTime orderDate;
     private LocalDateTime dispatchDate;

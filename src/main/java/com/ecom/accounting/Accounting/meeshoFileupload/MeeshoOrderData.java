@@ -18,7 +18,7 @@ public class MeeshoOrderData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private String sellerId;
     private String reasonForCreditEntry;
     private String subOrderNo;
     private LocalDate orderDate;
