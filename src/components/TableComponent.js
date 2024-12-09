@@ -8,9 +8,17 @@ const TableComponent = ({
   handleEditAction,
   handleDeleteAction,
   tableHeaders,
+  rowsPerPage = 10, // Default rows per page
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate pagination
+  const totalRows = tableData.length;
+  const totalPages = Math.ceil(totalRows / rowsPerPage);
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const paginatedData = tableData.slice(startIndex, startIndex + rowsPerPage);
 
   const handleEditClick = (item) => {
     setSelectedRow(item); // Set the row being edited
@@ -25,6 +33,12 @@ const TableComponent = ({
   const handleSaveChanges = (updatedItem) => {
     handleEditAction(updatedItem);
     closeModal();
+  };
+
+  const handlePageChange = (page) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
@@ -47,7 +61,7 @@ const TableComponent = ({
             </tr>
           </thead>
           <tbody>
-            {tableData.map((item, index) => (
+            {paginatedData.map((item, index) => (
               <tr key={index} style={styles.tableRow}>
                 {Object.values(item).map((value, i) => (
                   <td key={i} style={styles.tableCell}>
@@ -73,6 +87,38 @@ const TableComponent = ({
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Controls */}
+      <div style={styles.pagination}>
+        <button
+          style={styles.pageButton}
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i + 1}
+            style={{
+              ...styles.pageButton,
+              ...(currentPage === i + 1 && styles.activePage),
+            }}
+            onClick={() => handlePageChange(i + 1)}
+          >
+            {i + 1}
+          </button>
+        ))}
+        <button
+          style={styles.pageButton}
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
+
+      {/* Edit Modal */}
       {showModal && (
         <EditModal
           show={showModal}
@@ -112,52 +158,61 @@ const styles = {
   },
   tableContainer: {
     overflowX: "auto",
-    borderRadius: "8px",
-    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
   },
   table: {
     width: "100%",
     borderCollapse: "collapse",
-    margin: "10px 0",
+    marginBottom: "10px",
   },
   tableHeader: {
+    backgroundColor: "#f5f5f5",
+    fontWeight: "bold",
+    borderBottom: "1px solid #ddd",
     padding: "10px",
-    backgroundColor: "#007BFF",
-    color: "white",
-    textAlign: "left",
-    border: "1px solid #ddd",
   },
   tableRow: {
-    ":hover": {
-      backgroundColor: "#f2f2f2",
-    },
+    borderBottom: "1px solid #ddd",
   },
   tableCell: {
     padding: "10px",
-    border: "1px solid #ddd",
-    textAlign: "left",
+    textAlign: "center",
   },
   editButton: {
-    backgroundColor: "#FFD700",
+    backgroundColor: "#28A745",
+    color: "white",
     border: "none",
-    color: "#333",
+    borderRadius: "5px",
     padding: "5px 10px",
-    marginRight: "5px",
-    borderRadius: "4px",
     cursor: "pointer",
-    transition: "all 0.2s ease",
+    marginRight: "5px",
   },
   deleteButton: {
-    backgroundColor: "#FF5733",
-    border: "none",
+    backgroundColor: "red",
     color: "white",
+    border: "none",
+    borderRadius: "5px",
     padding: "5px 10px",
-    borderRadius: "4px",
     cursor: "pointer",
-    transition: "all 0.2s ease",
   },
-  icon: {
-    marginRight: "5px",
+  pagination: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "5px",
+    marginTop: "10px",
+  },
+  pageButton: {
+    padding: "5px 10px",
+    backgroundColor: "#f0f0f0",
+    border: "1px solid #ddd",
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background-color 0.2s ease",
+  },
+  activePage: {
+    backgroundColor: "#007BFF",
+    color: "white",
+    fontWeight: "bold",
   },
 };
 
