@@ -1,14 +1,41 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
     <div style={styles.sidebar}>
+      <h3>Seller Dashboard</h3>
       <ul style={styles.menu}>
-        <li><a href="/" style={styles.menuItem}>Dashboard</a></li>
-        <li><a href="/orders" style={styles.menuItem}>Orders</a></li>
-        <li><a href="/payments" style={styles.menuItem}>Payments</a></li>
-        <li><a href="/analytics" style={styles.menuItem}>Analytics</a></li>
-        <li><a href="/profile" style={styles.menuItem}>Profile</a></li>
+        <li>
+          <Link to="/" style={styles.menuItem}>
+            Dashboard
+          </Link>
+        </li>
+        <li>
+          <Link to="/orders" style={styles.menuItem}>
+            Orders
+          </Link>
+        </li>
+        <li>
+          <Link to="/upload" style={styles.menuItem}>
+            Upload File
+          </Link>
+        </li>
+        <li>
+          <a href="/payments" style={styles.menuItem}>
+            Payments
+          </a>
+        </li>
+        <li>
+          <a href="/analytics" style={styles.menuItem}>
+            Analytics
+          </a>
+        </li>
+        <li>
+          <a href="/profile" style={styles.menuItem}>
+            Profile
+          </a>
+        </li>
       </ul>
     </div>
   );

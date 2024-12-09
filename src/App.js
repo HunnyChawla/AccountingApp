@@ -3,19 +3,28 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
+import Orders from './components/Orders';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import FileUpload from './components/FileUpload';
 
 const App = () => {
   return (
+    <Router>
     <div style={styles.app}>
       <Navbar />
       <div style={styles.layout}>
         <Sidebar />
         <main style={styles.content}>
           <h1>Welcome to the Seller Dashboard</h1>
-          <Dashboard></Dashboard>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/upload" element={<FileUpload />} />
+          </Routes>
         </main>
       </div>
     </div>
+    </Router>
   );
 };
 
