@@ -17,7 +17,6 @@ const App = () => {
       <div style={styles.layout}>
         <Sidebar />
         <main style={styles.content}>
-          <h1>Welcome to the Seller Dashboard</h1>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/orders" element={<Orders />} />

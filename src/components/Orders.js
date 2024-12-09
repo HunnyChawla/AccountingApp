@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import TableComponent from "./TableComponent";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]); // Orders to display
@@ -18,7 +19,7 @@ const Orders = () => {
       const data = await response.json();
 
       setOrders(data);
-      console.log(orders)
+      console.log(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
       setOrders([]); // Clear data on error
@@ -44,34 +45,24 @@ const Orders = () => {
       </div>
 
       {/* Orders Table */}
-      <table style={styles.table}>
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Date</th>
-            <th>Order Status</th>
-            <th>SKU ID</th>
-            <th>Platform</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.length > 0 ? (
-            orders.map((order) => (
-              <tr key={order.orderId}>
-                <td>{order.orderId}</td>
-                <td>{order.orderDate}</td>
-                <td>{order.orderStatus}</td>
-                <td>{order.sku}</td>
-                <td>{order.platform}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5">No orders found</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <div style={styles.container}>
+        <TableComponent
+          tableData={orders}
+          handleAddAction={null}
+          handleEditAction={null}
+          handleDeleteAction={null}
+          tableHeaders={[
+            "Order ID",
+            "Date",
+            "Order Status",
+            "SKU ID",
+            "Dispatch Date",
+            "Quantity",
+            "Amount",
+            "Platform",
+          ]}
+        />
+      </div>
     </div>
   );
 };
@@ -97,7 +88,7 @@ const styles = {
     width: "100%",
     borderCollapse: "collapse",
     textAlign: "left",
-  },
+  }
 };
 
 export default Orders;
