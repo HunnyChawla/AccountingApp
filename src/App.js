@@ -6,6 +6,8 @@ import Dashboard from './components/Dashboard';
 import Orders from './components/Orders';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import FileUpload from './components/FileUpload';
+import UpdateProductCost from './components/UpdateProductCost';
+import Products from './components/Product';
 
 const App = () => {
   return (
@@ -20,6 +22,7 @@ const App = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/upload" element={<FileUpload />} />
+            <Route path="/products" element={<Products />} />
           </Routes>
         </main>
       </div>

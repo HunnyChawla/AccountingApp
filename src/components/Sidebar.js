@@ -1,7 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { AiOutlineHome } from "react-icons/ai";
-import { FaShoppingCart, FaUpload, FaMoneyBillWave, FaChartBar, FaUser } from "react-icons/fa";
+import {
+  FaShoppingCart,
+  FaUpload,
+  FaMoneyBillWave,
+  FaChartBar,
+  FaUser,
+  FaEdit,
+  FaBoxOpen,
+} from "react-icons/fa";
 
 const Sidebar = () => {
   return (
@@ -24,6 +32,12 @@ const Sidebar = () => {
           <Link to="/upload" style={styles.link}>
             <FaUpload style={styles.icon} />
             Upload File
+          </Link>
+        </li>
+        <li style={styles.menuItem}>
+          <Link to="/products" style={styles.link}>
+            <FaBoxOpen style={styles.icon} />
+             Product
           </Link>
         </li>
         <li style={styles.menuItem}>

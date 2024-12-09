@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const FileUpload = () => {
   const [files, setFiles] = useState([]);
+  const [fileType, setFileType] = useState("MEESHO_ORDER_DATA"); // Default file type
   const [uploadStatus, setUploadStatus] = useState(""); // Upload status message
   const [statusType, setStatusType] = useState(""); // "success" or "error" for styling
 
@@ -16,40 +17,58 @@ const FileUpload = () => {
 
   const handleUpload = async () => {
     if (files.length === 0) {
-        alert("Please select files to upload.");
-        setStatusType("error");
-        return;
-      }
-  
-      const formData = new FormData();
-      files.forEach((file) => formData.append("file", file)); // Append files to FormData
-      formData.append("fileType","MEESHO_ORDER_DATA")
-  
-      try {
-        const response = await fetch("http://localhost:8080/api/excel/upload", {
-          method: "POST",
-          body: formData,
-        });
-  
-        if (!response.ok) throw new Error("Upload failed");
-  
-        const result = await response.json();
-        setUploadStatus("Files uploaded successfully!");
-        setStatusType("success");
-        console.log("Server response:", result);
-  
-        // Clear files after successful upload
-        setFiles([]);
-      } catch (error) {
-        setUploadStatus("Failed to upload files.");
-        setStatusType("error");
-        console.error("Error uploading files:", error);
-      }
+      alert("Please select files to upload.");
+      setStatusType("error");
+      return;
+    }
+
+    const formData = new FormData();
+    files.forEach((file) => formData.append("file", file)); // Append files to FormData
+    formData.append("fileType", fileType);
+
+    try {
+      const response = await fetch("http://localhost:8080/api/excel/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Upload failed");
+
+      const result = await response.json();
+      setUploadStatus("Files uploaded successfully!");
+      setStatusType("success");
+      console.log("Server response:", result);
+
+      // Clear files after successful upload
+      setFiles([]);
+    } catch (error) {
+      setUploadStatus("Failed to upload files.");
+      setStatusType("error");
+      console.error("Error uploading files:", error);
+    }
   };
 
   return (
     <div style={styles.container}>
-      <h2>Upload Meesho Order Data</h2>
+      <h2>Upload Data</h2>
+
+      {/* File Type Selector */}
+      <div style={styles.selector}>
+        <label htmlFor="fileType">Select Data Type:</label>
+        <select
+          id="fileType"
+          value={fileType}
+          onChange={(e) => setFileType(e.target.value)}
+          style={styles.dropdown}
+        >
+          <option value="MEESHO_ORDER_DATA">Meesho Order Data</option>
+          <option value="MEESHO_PAYMENT_DATA">Meesho Payment Data</option>
+          <option value="FLIPKART_ORDER_DATA">Flipkart Order Data</option>
+          <option value="FLIPKART_PAYMENT_DATA">Flipkart Payment Data</option>
+          <option value="AMAZON_ORDER_DATA">Amazon Order Data</option>
+          <option value="AMAZON_PAYMENT_DATA">Amazon Payment Data</option>
+        </select>
+      </div>
 
       {/* Drag and Drop Area */}
       <div
@@ -110,6 +129,14 @@ const styles = {
     textAlign: "center",
     maxWidth: "600px",
     margin: "0 auto",
+  },
+  selector: {
+    marginBottom: "20px",
+  },
+  dropdown: {
+    marginLeft: "10px",
+    padding: "5px",
+    fontSize: "16px",
   },
   dropZone: {
     border: "2px dashed #ccc",
