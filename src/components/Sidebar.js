@@ -1,38 +1,46 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { AiOutlineHome } from "react-icons/ai";
+import { FaShoppingCart, FaUpload, FaMoneyBillWave, FaChartBar, FaUser } from "react-icons/fa";
 
 const Sidebar = () => {
   return (
     <div style={styles.sidebar}>
       <h3>Seller Dashboard</h3>
       <ul style={styles.menu}>
-        <li>
-          <Link to="/" style={styles.menuItem}>
+        <li style={styles.menuItem}>
+          <Link to="/" style={styles.link}>
+            <AiOutlineHome style={styles.icon} />
             Dashboard
           </Link>
         </li>
-        <li>
-          <Link to="/orders" style={styles.menuItem}>
+        <li style={styles.menuItem}>
+          <Link to="/orders" style={styles.link}>
+            <FaShoppingCart style={styles.icon} />
             Orders
           </Link>
         </li>
-        <li>
-          <Link to="/upload" style={styles.menuItem}>
+        <li style={styles.menuItem}>
+          <Link to="/upload" style={styles.link}>
+            <FaUpload style={styles.icon} />
             Upload File
           </Link>
         </li>
-        <li>
-          <a href="/payments" style={styles.menuItem}>
+        <li style={styles.menuItem}>
+          <a href="/payments" style={styles.link}>
+            <FaMoneyBillWave style={styles.icon} />
             Payments
           </a>
         </li>
-        <li>
-          <a href="/analytics" style={styles.menuItem}>
+        <li style={styles.menuItem}>
+          <a href="/analytics" style={styles.link}>
+            <FaChartBar style={styles.icon} />
             Analytics
           </a>
         </li>
-        <li>
-          <a href="/profile" style={styles.menuItem}>
+        <li style={styles.menuItem}>
+          <a href="/profile" style={styles.link}>
+            <FaUser style={styles.icon} />
             Profile
           </a>
         </li>
@@ -54,16 +62,26 @@ const styles = {
     padding: 0,
   },
   menuItem: {
-    display: "block",
-    padding: "10px",
-    margin: "5px 0",
+    display: "flex",
+    alignItems: "center",
+    margin: "10px 0",
+  },
+  link: {
+    display: "flex",
+    alignItems: "center",
     textDecoration: "none",
     color: "#333",
     fontWeight: "500",
     borderRadius: "5px",
     transition: "background-color 0.2s",
+    padding: "10px",
+    width: "100%",
   },
-  menuItemHover: {
+  icon: {
+    marginRight: "10px",
+    fontSize: "18px",
+  },
+  linkHover: {
     backgroundColor: "#007bff",
     color: "#fff",
   },
