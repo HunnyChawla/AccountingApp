@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import TableComponent from "./TableComponent";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -63,104 +64,14 @@ const Products = () => {
 
   return (
     <div style={styles.container}>
-      <h2>Products Management</h2>
-
-      {/* Add Product Form */}
-      <div style={styles.addProductForm}>
-        <h3>Add Product</h3>
-        <input
-          type="text"
-          placeholder="SKU"
-          value={newProduct.sku}
-          onChange={(e) => setNewProduct({ ...newProduct, sku: e.target.value })}
-          style={styles.input}
-        />
-        <input
-          type="text"
-          placeholder="Product Name"
-          value={newProduct.name}
-          onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-          style={styles.input}
-        />
-        <input
-          type="number"
-          placeholder="Cost"
-          value={newProduct.cost}
-          onChange={(e) => setNewProduct({ ...newProduct, cost: parseFloat(e.target.value) })}
-          style={styles.input}
-        />
-        <button onClick={handleAddProduct} style={styles.addButton}>
-          Add Product
-        </button>
-      </div>
-
       {/* Products Table */}
-      <div style={styles.tableContainer}>
-        <h3>All Products</h3>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              <th>SKU</th>
-              <th>Name</th>
-              <th>Cost</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.id}>
-                <td>{product.sku}</td>
-                <td>{product.name}</td>
-                <td>{product.cost}</td>
-                <td>
-                  <button
-                    style={styles.editButton}
-                    onClick={() => {
-                      setEditProduct(product);
-                      setShowEditModal(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Edit Product Modal */}
-      {showEditModal && (
-        <div style={styles.modal}>
-          <div style={styles.modalContent}>
-            <h3>Edit Product</h3>
-            <input
-              type="text"
-              value={editProduct.sku}
-              onChange={(e) => setEditProduct({ ...editProduct, sku: e.target.value })}
-              style={styles.input}
-            />
-            <input
-              type="text"
-              value={editProduct.name}
-              onChange={(e) => setEditProduct({ ...editProduct, name: e.target.value })}
-              style={styles.input}
-            />
-            <input
-              type="number"
-              value={editProduct.cost}
-              onChange={(e) => setEditProduct({ ...editProduct, cost: parseFloat(e.target.value) })}
-              style={styles.input}
-            />
-            <button onClick={handleEditProduct} style={styles.saveButton}>
-              Save
-            </button>
-            <button onClick={() => setShowEditModal(false)} style={styles.cancelButton}>
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      <TableComponent
+      tableData={products}
+      handleAddAction={handleAddProduct}
+      handleEditAction={handleEditProduct}
+      handleDeleteAction={null}
+      tableHeaders={["SKU", "Product Name", "Cost"]}
+    />
     </div>
   );
 };
