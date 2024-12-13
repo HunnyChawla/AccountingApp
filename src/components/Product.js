@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TableComponent from "./TableComponent";
+import { fetchWithAuth } from "../Util";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -10,11 +11,13 @@ const Products = () => {
   useEffect(() => {
     // Fetch products data from the API
     fetchProducts();
+    console.log("fetchProducts called")
   }, []);
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:8080/products");
+      console.log("Calling fetchProducts");
+      const response = await fetchWithAuth("http://localhost:8080/products");
       const data = await response.json();
       setProducts(data);
     } catch (error) {
@@ -67,7 +70,10 @@ const Products = () => {
       {/* Products Table */}
       <TableComponent
       tableData={products}
+      showAddItemButton={true}
       handleAddAction={handleAddProduct}
+      addButtonText={"Add Product"}
+      showEditAction={true}
       handleEditAction={handleEditProduct}
       handleDeleteAction={null}
       tableHeaders={["SKU", "Product Name", "Cost"]}

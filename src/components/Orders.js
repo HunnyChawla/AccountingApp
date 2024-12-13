@@ -48,6 +48,7 @@ const Orders = () => {
       <div style={styles.container}>
         <TableComponent
           tableData={orders}
+          showAddItemButton={false}
           handleAddAction={null}
           handleEditAction={null}
           handleDeleteAction={null}

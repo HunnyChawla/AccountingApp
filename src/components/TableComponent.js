@@ -4,10 +4,14 @@ import EditModal from "./EditModal";
 
 const TableComponent = ({
   tableData,
+  showAddItemButton,
   handleAddAction,
+  addButtonText,
   handleEditAction,
   handleDeleteAction,
   tableHeaders,
+  showEditAction,
+  showDeleteAction,
   rowsPerPage = 10, // Default rows per page
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
@@ -43,11 +47,11 @@ const TableComponent = ({
 
   return (
     <div style={styles.container}>
-      <div style={styles.actionContainer}>
+      {showAddItemButton && (<div style={styles.actionContainer}>
         <button style={styles.addButton} onClick={handleAddAction}>
-          <FaPlusCircle style={styles.icon} /> Add Item
+          <FaPlusCircle style={styles.icon} /> {addButtonText}
         </button>
-      </div>
+      </div>)}
       <div style={styles.tableContainer}>
         <table style={styles.table}>
           <thead>
@@ -57,7 +61,7 @@ const TableComponent = ({
                   {header}
                 </th>
               ))}
-              <th style={styles.tableHeader}>Actions</th>
+              {(showEditAction || showDeleteAction) && (<th style={styles.tableHeader}>Actions</th>)}
             </tr>
           </thead>
           <tbody>
@@ -68,20 +72,20 @@ const TableComponent = ({
                     {value}
                   </td>
                 ))}
-                <td style={styles.tableCell}>
-                  <button
+                {(showEditAction || showDeleteAction) && (<td style={styles.tableCell}>
+                  {showEditAction && (<button
                     style={styles.editButton}
                     onClick={() => handleEditClick(item)}
                   >
                     <FaEdit style={styles.icon} />
-                  </button>
-                  <button
+                  </button>)}
+                  {showDeleteAction && (<button
                     style={styles.deleteButton}
                     onClick={() => handleDeleteAction(item)}
                   >
                     <FaTrash style={styles.icon} />
-                  </button>
-                </td>
+                  </button>)}
+                </td>)}
               </tr>
             ))}
           </tbody>

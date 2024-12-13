@@ -8,6 +8,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import FileUpload from './components/FileUpload';
 import UpdateProductCost from './components/UpdateProductCost';
 import Products from './components/Product';
+import ProtectedRoute from './components/ProtectedRoute';
+import LoginRegistration from './components/LoginRegistration';
+import LogoutScreen from './components/LogoutScreen';
 
 const App = () => {
   return (
@@ -15,13 +18,16 @@ const App = () => {
     <div style={styles.app}>
       <Navbar />
       <div style={styles.layout}>
-        <Sidebar />
+      <ProtectedRoute><Sidebar /></ProtectedRoute>
         <main style={styles.content}>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/upload" element={<FileUpload />} />
-            <Route path="/products" element={<Products />} />
+            {/* <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> */}
+            <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/login" element={<LoginRegistration />} />
+            <Route path="/logout" element={<LogoutScreen />} />
+            <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
+            <Route path="/upload" element={<ProtectedRoute><FileUpload /></ProtectedRoute>} />
+            <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>

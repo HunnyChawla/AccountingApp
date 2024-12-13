@@ -3,6 +3,7 @@ import ProfitLossCard from "./ProfitLossCard";
 import OrdersChart from "./OrdersChart";
 import ProfitLossChart from "./ProfitLossChart";
 import OrdersTable from "./ordersTable";
+import { fetchWithAuth } from "../Util";
 
 const Dashboard = () => {
     const [ordersData, setOrdersData] = useState([]);
@@ -16,9 +17,7 @@ const Dashboard = () => {
             setLoading(true);
     
             // Construct API URL with query parameters
-            const response = await fetch(
-              `http://localhost:8080/orders?month=${month}&year=${year}`
-            );
+            const response =  await fetchWithAuth(`http://localhost:8080/orders?month=${month}&year=${year}`);
     
             if (!response.ok) throw new Error("Failed to fetch orders data");
     
