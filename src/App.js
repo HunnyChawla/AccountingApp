@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -6,13 +5,14 @@ import Dashboard from './components/Dashboard';
 import Orders from './components/Orders';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import FileUpload from './components/FileUpload';
-import UpdateProductCost from './components/UpdateProductCost';
 import Products from './components/Product';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginRegistration from './components/LoginRegistration';
 import LogoutScreen from './components/LogoutScreen';
+import { useSelector } from 'react-redux';
 
 const App = () => {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   return (
     <Router>
     <div style={styles.app}>

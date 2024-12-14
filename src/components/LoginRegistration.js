@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useDispatch } from 'react-redux';
+import { login } from '../Store/slice/authSlice';
 
 const LoginRegistration = () => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between Login and Registration
   const [formData, setFormData] = useState({ username: "", password: "", name: "" });
   const [loginStatus, setLoginStatus] = useState(null); // For displaying login status messages
   const navigate = useNavigate(); // Initialize navigate
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -37,6 +40,13 @@ const LoginRegistration = () => {
 
         console.log("Access Token:", result.access_token);
         console.log("Refresh Token:", result.refresh_token);
+        dispatch(login({ 
+            username: formData.username, 
+            accessToken: result.access_token,
+            refreshToken: result.refresh_token,
+            expiresIn: result.expires_in,
+            expiresAt: new Date().getTime() + result.expires_in * 1000
+        }));
         navigate("/"); // Redirect to the home route
       } catch (error) {
         setLoginStatus({ type: "error", message: "Invalid Username or password." });
