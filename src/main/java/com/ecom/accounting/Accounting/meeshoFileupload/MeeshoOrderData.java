@@ -30,5 +30,5 @@ public class MeeshoOrderData {
     private BigDecimal supplier_listed_price;
     private BigDecimal supplier_discounted_price;
     private String packetId;
-
+    private int processingStatus = 0;
 }

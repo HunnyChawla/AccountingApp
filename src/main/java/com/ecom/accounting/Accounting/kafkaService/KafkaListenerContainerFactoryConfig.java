@@ -15,4 +15,11 @@ public class KafkaListenerContainerFactoryConfig {
         factory.setConsumerFactory(fileUploadConsumerFactory);
         return factory;
     }
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> processDataKafkaListenerContainerFactory(
+            ConsumerFactory<String, String> processDataConsumerFactory) {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(processDataConsumerFactory);
+        return factory;
+    }
 }

@@ -1,0 +1,37 @@
+spring:
+  web:
+    cors:
+      allowed-origin-patterns: "*"
+      allowed-methods: GET,POST,PUT,DELETE
+      allowed-headers: "*"
+      allow-credentials: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/Security-Realm
+  application:
+    name: Accounting
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: hunny
+    password: hunny
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: data-processing-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: com.ecom.accounting.Accounting.kafkaService.MeeshoPaymentDataDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: com.ecom.accounting.Accounting.kafkaService.MeeshoPaymentDataSerializer
+
+file:
+  upload-dir: /Users/hunnychawla/uploads

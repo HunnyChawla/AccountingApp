@@ -18,4 +18,13 @@ public class KafkaTopicConfig {
     public NewTopic messhoPaymentDataFileUpload() {
         return new NewTopic("meesho.payments.data.file.upload", 1, (short) 1);
     }
+
+    @Bean
+    public NewTopic messhoProcessOrderData() {
+        return new NewTopic("meesho.order.data.process", 1, (short) 1);
+    }
+    @Bean
+    public NewTopic messhoProcessPaymentsData() {
+        return new NewTopic("meesho.payment.data.process", 1, (short) 1);
+    }
 }

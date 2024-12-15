@@ -1,42 +1,41 @@
 package com.ecom.accounting.Accounting.ordermanagement;
 
 import com.ecom.accounting.Accounting.meeshoFileupload.FileUploadService;
-import com.opencsv.exceptions.CsvValidationException;
+import com.ecom.accounting.Accounting.ordermanagement.dto.OrderCountDto;
+import com.ecom.accounting.Accounting.ordermanagement.dto.OrderDto;
+import com.ecom.accounting.Accounting.ordermanagement.dto.OrdersDataResponseDto;
+import com.ecom.accounting.Accounting.ordermanagement.mapper.OrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/order")
+@RequestMapping("/orders")
 public class OrderController {
 
     @Autowired
     private FileUploadService fileUploadService;
 
-    @PostMapping("/upload-excel")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload a valid Excel file.");
-        }
+    @Autowired
+    private OrdersService ordersService;
 
-        fileUploadService.saveDataFromExcel(file);
-        return ResponseEntity.ok("File uploaded and data saved successfully.");
+    @GetMapping
+    public ResponseEntity<OrdersDataResponseDto> getOrders(@RequestParam("month") int month, @RequestParam("year") int year) {
+        List<OrderCountDto> orderCountsByDateInMonth = ordersService.getOrderCountsByDateInMonth(month, year);
+        return ResponseEntity.ok(new OrdersDataResponseDto(orderCountsByDateInMonth));
     }
 
-    @PostMapping("/upload-csv")
-    public ResponseEntity<String> uploadOrders(@RequestParam("file") MultipartFile file) throws CsvValidationException, IOException {
-        if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload a valid CSV file.");
+    @GetMapping("/{orderId}")
+    public ResponseEntity<List<OrderDto>> getOrders(@PathVariable String orderId) {
+        Optional<Order> orderById = ordersService.findOrderById(orderId);
+        OrderDto dto = null;
+        if(orderById.isPresent()) {
+             dto = OrderMapper.toDTO(orderById.get());
         }
-
-        fileUploadService.saveCSVData(file);
-        return ResponseEntity.ok("File uploaded and data saved successfully.");
+        return ResponseEntity.ok(List.of(dto));
     }
 }

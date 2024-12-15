@@ -38,6 +38,9 @@ public class FileUploadService {
     @Autowired
     private KafkaTemplate<String, FileUploadDataKafkaDto> fileUploadDataKafkaDtoKafkaTemplate;
 
+    @Autowired
+    private KafkaTemplate<String, String> processDataKafkaTemplate;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -117,35 +120,40 @@ public class FileUploadService {
     public void saveMeeshoOrderData(String filePath, String sellerId) throws IOException, CsvValidationException {
         File file = new File(filePath);
         try (CSVReader reader = new CSVReader(new FileReader(file))) {
-            Path path = Paths.get(filePath);
-            String[] line;
-            boolean isFirstRow = true;
-            List<MeeshoOrderData> meeshoOrderData = new ArrayList<>();
-            while ((line = reader.readNext()) != null) {
-                if(isFirstRow) {
-                    isFirstRow = false;
-                    continue;
-                }
-                MeeshoOrderData record = new MeeshoOrderData();
-                record.setReasonForCreditEntry(line[0]);
-                record.setSubOrderNo(line[1]);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                LocalDate localDate = LocalDate.parse(line[2], formatter);
-                record.setOrderDate(localDate);
-                record.setCustomerState(line[3]);
-                record.setProductName(line[4]);
-                record.setSku(line[5]);
-                record.setSize(line[6]);
-                record.setQuantity(Integer.parseInt(line[7]));
-                record.setSupplier_listed_price(new BigDecimal(line[8]));
-                record.setSupplier_discounted_price(new BigDecimal(line[9]));
-//                record.setPacketId(row.getCell(10).getStringCellValue());
-                record.setSellerId(sellerId);
-                // Set other fields as necessary
-                meeshoOrderData.add(record);
-            }
+            List<MeeshoOrderData> meeshoOrderData = getMeeshoOrderData(sellerId, reader);
             meeshoOrderRepository.saveAll(meeshoOrderData);
         }
+        processDataKafkaTemplate.send("meesho.order.data.process",sellerId);
+    }
+
+    private static List<MeeshoOrderData> getMeeshoOrderData(String sellerId, CSVReader reader) throws IOException, CsvValidationException {
+        String[] line;
+        boolean isFirstRow = true;
+        List<MeeshoOrderData> meeshoOrderData = new ArrayList<>();
+        while ((line = reader.readNext()) != null) {
+            if(isFirstRow) {
+                isFirstRow = false;
+                continue;
+            }
+            MeeshoOrderData record = new MeeshoOrderData();
+            record.setReasonForCreditEntry(line[0]);
+            record.setSubOrderNo(line[1]);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate localDate = LocalDate.parse(line[2], formatter);
+            record.setOrderDate(localDate);
+            record.setCustomerState(line[3]);
+            record.setProductName(line[4]);
+            record.setSku(line[5]);
+            record.setSize(line[6]);
+            record.setQuantity(Integer.parseInt(line[7]));
+            record.setSupplier_listed_price(new BigDecimal(line[8]));
+            record.setSupplier_discounted_price(new BigDecimal(line[9]));
+//                record.setPacketId(row.getCell(10).getStringCellValue());
+            record.setSellerId(sellerId);
+            // Set other fields as necessary
+            meeshoOrderData.add(record);
+        }
+        return meeshoOrderData;
     }
 
     @Transactional
@@ -285,8 +293,8 @@ public class FileUploadService {
                 meeshoPaymentData.setGstOnNetOtherSupportServiceCharges(new BigDecimal(row.getCell(39).getStringCellValue()));
                 meeshoPaymentData.setGstOnFixedFee(new BigDecimal(row.getCell(40).getStringCellValue()));
                 meeshoPaymentData.setTcs(new BigDecimal(row.getCell(41).getStringCellValue()));
-                meeshoPaymentData.setTdsRate(new BigDecimal(row.getCell(42).getStringCellValue()));
-                meeshoPaymentData.setTds(new BigDecimal(row.getCell(43).getStringCellValue()));
+                meeshoPaymentData.setTdsRate(new BigDecimal(getStringValueFromRow(row,42)));
+                meeshoPaymentData.setTds(new BigDecimal(getStringValueFromRow(row,43)));
                 meeshoPaymentData.setCompensation(new BigDecimal(row.getCell(44).getStringCellValue()));
                 meeshoPaymentData.setClaims(new BigDecimal(row.getCell(45).getStringCellValue()));
                 meeshoPaymentData.setRecovery(new BigDecimal(row.getCell(46).getStringCellValue()));
@@ -297,6 +305,7 @@ public class FileUploadService {
                 meeshoPaymentDataList.add(meeshoPaymentData);
             }
             meeshoPaymentsRepository.saveAll(meeshoPaymentDataList);
+            processDataKafkaTemplate.send("meesho.payment.data.process",sellerId);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -337,6 +346,11 @@ public class FileUploadService {
         } else if (fileType.equals("MEESHO_PAYMENTS_DATA")) {
             fileUploadDataKafkaDtoKafkaTemplate.send("meesho.payments.data.file.upload", new FileUploadDataKafkaDto("hunnychawla", filePath));
         }
+    }
+
+    private String getStringValueFromRow(Row row, int rowNumber) {
+        String value = row.getCell(rowNumber).getStringCellValue();
+        return Objects.isNull(value) || value.isEmpty()? "0" : value;
     }
 
 }

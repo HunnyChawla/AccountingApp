@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Setter
@@ -12,12 +13,15 @@ import java.time.LocalDateTime;
 @Table(name = "\"order\"") // Escapes the table name
 public class Order {
     @Id
-    private Long orderId;
-    private Long sellerId;
-    private LocalDateTime orderDate;
+    private String orderId;
+    private String sellerId;
+    private LocalDate orderDate;
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
     private String sku;
-    private LocalDateTime dispatchDate;
+    private LocalDate dispatchDate;
     private Integer quantity;
+    private BigDecimal amount;
+    @Enumerated(EnumType.STRING)
+    private Platform platform;
 }

@@ -30,6 +30,11 @@ public class KafkaProducerConfig {
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerProps(FileUploadDataSerializer.class)));
     }
 
+    @Bean
+    public KafkaTemplate<String, String> processDataKafkaTemplate() {
+        return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerProps(StringSerializer.class)));
+    }
+
     private Map<String, Object> producerProps(Class<? extends Serializer> serializerClass) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);

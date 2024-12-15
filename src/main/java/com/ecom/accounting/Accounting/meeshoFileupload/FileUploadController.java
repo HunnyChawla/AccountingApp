@@ -1,10 +1,14 @@
 package com.ecom.accounting.Accounting.meeshoFileupload;
 
+import com.ecom.accounting.Accounting.dto.FileUploadResponseDto;
+import com.ecom.accounting.Accounting.security.TokenService;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +54,6 @@ public class FileUploadController {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Please upload a valid Excel file.");
         }
-
         fileUploadService.savePaymentDataFromExcel(file);
         return ResponseEntity.ok("File uploaded and data saved successfully.");
     }
@@ -58,14 +61,20 @@ public class FileUploadController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType) {
+    public ResponseEntity<FileUploadResponseDto> uploadFile(@AuthenticationPrincipal Jwt jwt, @RequestParam("file") MultipartFile file, @RequestParam("fileType") String fileType) {
         try {
+            String userIdFromToken = TokenService.getUserIdFromToken(jwt);
+            System.out.println("UserName::" + userIdFromToken);
             String filePath = fileUploadService.uploadFile(file,fileType);
-            return ResponseEntity.ok("File uploaded successfully: " + filePath);
+            return ResponseEntity.ok(new FileUploadResponseDto("File Upload Successfully",
+                    false,
+                    filePath));
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to upload file: " + e.getMessage());
+                    .body(new FileUploadResponseDto("File Upload Successfully",
+                            true,
+                            ""));
         }
     }
 }
