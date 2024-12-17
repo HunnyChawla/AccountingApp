@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import TableComponent from "./TableComponent";
+import { fetchWithAuth } from "../Util";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]); // Orders to display
@@ -7,7 +8,7 @@ const Orders = () => {
 
   const handleSearch = async () => {
     try {
-      const response = await fetch(
+      const response = await fetchWithAuth(
         `http://localhost:8080/orders/${searchText}`,
         {
           method: "GET",
@@ -25,6 +26,15 @@ const Orders = () => {
       setOrders([]); // Clear data on error
     }
   };
+
+  const fetchProductData = async () => {
+    return await fetchWithAuth(
+        `http://localhost:8080/orders/${searchText}`,
+        {
+          method: "GET",
+        }
+      );
+  }
 
   return (
     <div>
@@ -48,6 +58,7 @@ const Orders = () => {
       <div style={styles.container}>
         <TableComponent
           tableData={orders}
+          isPagination={false}
           showAddItemButton={false}
           handleAddAction={null}
           handleEditAction={null}

@@ -13,21 +13,16 @@ import {
 // Register the required components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ProfitLossChart = ({ data }) => {
+const OrdersCountByStatusChart = ({ data }) => {
   // Prepare the chart data
   const chartData = {
-    labels: data.map((item) => item.date),
+    labels: data.map((item) => item.orderStatus),
     datasets: [
       {
-        label: "Profit",
-        data: data.map((item) => item.profit),
+        label: "Orders",
+        data: data.map((item) => item.count),
         backgroundColor: "rgba(75, 192, 192, 0.6)", // Light green
-      },
-      {
-        label: "Loss",
-        data: data.map((item) => item.loss),
-        backgroundColor: "rgba(255, 99, 132, 0.6)", // Light red
-      },
+      }
     ],
   };
 
@@ -49,10 +44,10 @@ const ProfitLossChart = ({ data }) => {
 
   return (
     <div style={{ width: "45%", height: "300px", margin: "10px" }}>
-      <h3>Profit/Loss Overview</h3>
+      <h3>Order Count By Status</h3>
       <Bar data={chartData} options={options} />
     </div>
   );
 };
 
-export default ProfitLossChart;
+export default OrdersCountByStatusChart;

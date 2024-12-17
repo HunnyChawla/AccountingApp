@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlusCircle, FaEdit, FaTrash } from "react-icons/fa";
 import EditModal from "./EditModal";
 
 const TableComponent = ({
+  fetchData,
   tableData,
+  isPagination,
   showAddItemButton,
   handleAddAction,
   addButtonText,
@@ -11,18 +13,31 @@ const TableComponent = ({
   handleDeleteAction,
   tableHeaders,
   showEditAction,
-  showDeleteAction,
-  rowsPerPage = 10, // Default rows per page
+  showDeleteAction
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [data, setData] = useState([]); // Current page data
+  const [totalRows, setTotalRows] = useState(0); // Total rows count from backend
+  const [loading, setLoading] = useState(false); // Loading state
+  const [currentPage, setCurrentPage] = useState(1); // Current page
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
+  const [totalPages, setTotalPages] = useState(1); // total Pages
 
-  // Calculate pagination
-  const totalRows = tableData.length;
-  const totalPages = Math.ceil(totalRows / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const paginatedData = tableData.slice(startIndex, startIndex + rowsPerPage);
+
+  useEffect(() => {
+    if(!tableData) {
+        loadData(currentPage, rowsPerPage);
+    }
+    else {
+        setData(tableData);
+    }
+  }, [currentPage, rowsPerPage, tableData]);
+
+  // Handle pagination
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   const handleEditClick = (item) => {
     setSelectedRow(item); // Set the row being edited
@@ -35,18 +50,33 @@ const TableComponent = ({
   };
 
   const handleSaveChanges = (updatedItem) => {
-    handleEditAction(updatedItem);
+    const isUpdated = handleEditAction(updatedItem);
+    if(isUpdated) {
+        loadData(currentPage, rowsPerPage)
+    }
     closeModal();
   };
 
-  const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
+
+  const loadData = async (page, size) => {
+    setLoading(true);
+    try {
+      const response = await fetchData(page-1, size); // API call
+      const data = await response.json();
+      setData(data.content); // Table data
+      setTotalRows(data.totalElements); // Total rows
+      setTotalPages(data.totalPages)
+      console.log("Data ::", data)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={styles.container}>
+    <div>
+        { !loading && (<div style={styles.container}>
       {showAddItemButton && (<div style={styles.actionContainer}>
         <button style={styles.addButton} onClick={handleAddAction}>
           <FaPlusCircle style={styles.icon} /> {addButtonText}
@@ -65,7 +95,7 @@ const TableComponent = ({
             </tr>
           </thead>
           <tbody>
-            {paginatedData.map((item, index) => (
+            {data.map((item, index) => (
               <tr key={index} style={styles.tableRow}>
                 {Object.values(item).map((value, i) => (
                   <td key={i} style={styles.tableCell}>
@@ -91,9 +121,10 @@ const TableComponent = ({
           </tbody>
         </table>
       </div>
+      {isPagination && (<div>Total Rows: {totalRows} Rows Per Page: {rowsPerPage}</div>)}
 
       {/* Pagination Controls */}
-      <div style={styles.pagination}>
+      {isPagination && (<div style={styles.pagination}>
         <button
           style={styles.pageButton}
           onClick={() => handlePageChange(currentPage - 1)}
@@ -120,7 +151,7 @@ const TableComponent = ({
         >
           Next
         </button>
-      </div>
+      </div>)}
 
       {/* Edit Modal */}
       {showModal && (
@@ -131,7 +162,7 @@ const TableComponent = ({
           data={selectedRow}
         />
       )}
-    </div>
+    </div>)}</div>
   );
 };
 

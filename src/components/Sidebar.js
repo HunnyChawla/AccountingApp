@@ -9,6 +9,7 @@ import {
   FaUser,
   FaEdit,
   FaBoxOpen,
+  FaClock,
 } from "react-icons/fa";
 
 const Sidebar = () => {
@@ -38,6 +39,12 @@ const Sidebar = () => {
           <Link to="/products" style={styles.link}>
             <FaBoxOpen style={styles.icon} />
              Product
+          </Link>
+        </li>
+        <li style={styles.menuItem}>
+          <Link to="/order365" style={styles.link}>
+            <FaClock style={styles.icon} />
+             Order365
           </Link>
         </li>
         <li style={styles.menuItem}>

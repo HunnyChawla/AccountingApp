@@ -10,6 +10,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginRegistration from './components/LoginRegistration';
 import LogoutScreen from './components/LogoutScreen';
 import { useSelector } from 'react-redux';
+import Order365 from './components/Order365';
 
 const App = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -28,6 +29,7 @@ const App = () => {
             <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
             <Route path="/upload" element={<ProtectedRoute><FileUpload /></ProtectedRoute>} />
             <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+            <Route path="/order365" element={<ProtectedRoute><Order365 /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>

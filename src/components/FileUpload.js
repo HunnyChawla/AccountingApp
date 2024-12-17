@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { fetchWithAuth } from "../Util";
 
 const FileUpload = () => {
   const [files, setFiles] = useState([]);
@@ -27,7 +28,7 @@ const FileUpload = () => {
     formData.append("fileType", fileType);
 
     try {
-      const response = await fetch("http://localhost:8080/api/excel/upload", {
+      const response = await fetchWithAuth("http://localhost:8080/api/excel/upload", {
         method: "POST",
         body: formData,
       });

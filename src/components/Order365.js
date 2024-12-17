@@ -1,77 +1,50 @@
 import React, { useState, useEffect } from "react";
 import TableComponent from "./TableComponent";
 import { fetchWithAuth } from "../Util";
+import SearchComponent from "./SearchComponent";
 
-const Products = () => {
-  const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ sku: "", name: "", cost: 0 });
-  const [editProduct, setEditProduct] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
+const Order365 = () => {
+  const [completeOrderData, setCompleteOrderData] = useState([]);
+  const dropdownOptions = [
+    { label: "DELIVERED", value: "DELIVERED" },
+    { label: "RETURN", value: "RETURN" },
+    { label: "RTO_COMPLETE", value: "RTO_COMPLETE" },
+  ];
+
+  const handleSearch = (searchData) => {
+    console.log("Search Data:", searchData);
+    
+  };
 
   useEffect(() => {
     // Fetch products data from the API
-    // fetchProducts();
-    // console.log("fetchProducts called")
+    // fetchCompleteOrderData();
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchCompleteOrderData = async (page, size) => {
     try {
-      return await fetchWithAuth("http://localhost:8080/products");
+      return await fetchWithAuth(`http://localhost:8080/order365?page=${page}&size=${size}`);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
-  const handleAddProduct = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/products", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newProduct),
-      });
-
-      if (!response.ok) throw new Error("Failed to add product");
-
-      setNewProduct({ sku: "", name: "", cost: 0 });
-      fetchProducts(); // Refresh products list
-      alert("Product added successfully!");
-    } catch (error) {
-      console.error("Error adding product:", error);
-    }
-  };
-
-  const handleEditProduct = async (updatedProdct) => {
-    try {
-      const response = await fetchWithAuth(`http://localhost:8080/products`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedProdct),
-      });
-
-      if (!response.ok) throw new Error("Failed to update product");
-    //   alert("Product updated successfully!");
-      return true;
-    } catch (error) {
-      console.error("Error updating product:", error);
-    }
-  };
-
   return (
     <div style={styles.container}>
-      {/* Products Table */}
+      <div>
+      <SearchComponent
+        dropdownOptions={dropdownOptions}
+        onSearch={handleSearch}
+        inputPlaceholder="Order id"
+        datePlaceholder="Order Date"
+        dropdownPlaceHolder="Select Order Status"
+      />
+    </div>
+      {/* Order 365 Table */}
       <TableComponent
-      fetchData={fetchProducts}
-      showAddItemButton={true}
-      handleAddAction={handleAddProduct}
-      addButtonText={"Add Product"}
-      showEditAction={true}
-      handleEditAction={handleEditProduct}
-      handleDeleteAction={null}
-      tableHeaders={["SKU", "Product Name", "Cost"]}
+      fetchData={fetchCompleteOrderData}
+      isPagination={true}
+      tableHeaders={["Order Id", "SKU Id", "Order Amount","Bank Settlement","Profit","Order Date","Order Status"]}
     />
     </div>
   );
@@ -162,4 +135,4 @@ const styles = {
   },
 };
 
-export default Products;
+export default Order365;

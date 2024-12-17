@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ProfitLossCard from "./ProfitLossCard";
 import OrdersChart from "./OrdersChart";
-import ProfitLossChart from "./ProfitLossChart";
+import OrdersCountByStatusChart from "./OrdersCountByStatusChart";
 import OrdersTable from "./ordersTable";
 import { fetchWithAuth } from "../Util";
 
@@ -10,7 +10,17 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [month, setMonth] = useState(new Date().getMonth() + 1); // Current month (1-based)
     const [year, setYear] = useState(new Date().getFullYear()); // Current year
+    const [orderCountData,setOrderCountData] = useState([]);
   
+    const fetchOrderCountData = async () => {
+        const response =  await fetchWithAuth(`http://localhost:8080/orders/countByOrderStatus`);
+    
+            if (!response.ok) throw new Error("Failed to fetch orders data");
+    
+            const data = await response.json();
+            setOrderCountData(data);
+    }
+    
     useEffect(() => {
         const fetchOrders = async () => {
           try {
@@ -38,12 +48,17 @@ const Dashboard = () => {
         };
     
         fetchOrders();
+        fetchOrderCountData();
       }, [month, year]); // Re-fetch when month or year changes
   
     if (loading) return <p>Loading...</p>;
-  
 
-  const profitLossData = [
+    // useEffect(() => {
+        
+    // },[]);
+  
+    
+  const OrdersCountByStatusData = [
     { date: "2024-12-01", profit: 2000, loss: 500 },
     { date: "2024-12-02", profit: 2500, loss: 300 },
     { date: "2024-12-03", profit: 1500, loss: 800 },
@@ -51,8 +66,8 @@ const Dashboard = () => {
   ];
 
   // Calculate total profit and loss
-  const totalProfit = profitLossData.reduce((sum, item) => sum + item.profit, 0);
-  const totalLoss = profitLossData.reduce((sum, item) => sum + item.loss, 0);
+  const totalProfit = 100;
+  const totalLoss = 20;
 
   return (
     <div>
@@ -85,7 +100,7 @@ const Dashboard = () => {
       <div style={styles.chartContainer}>
       <ProfitLossCard profit={totalProfit} loss={totalLoss} />
         <OrdersChart data={ordersData} />
-        <ProfitLossChart data={profitLossData} />
+        <OrdersCountByStatusChart data={orderCountData} />
       </div>
       {/* Add more analytics components */}
     </div>
