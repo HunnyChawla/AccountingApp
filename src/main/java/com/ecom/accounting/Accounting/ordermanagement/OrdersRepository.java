@@ -1,5 +1,6 @@
 package com.ecom.accounting.Accounting.ordermanagement;
 
+import com.ecom.accounting.Accounting.ordermanagement.dto.OrderCountByStatusResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,8 +22,12 @@ interface OrdersRepository extends JpaRepository<Order,String> {
     @Query("SELECT DATE(o.orderDate) AS orderDate, COUNT(o) AS orderCount " +
             "FROM Order o " +
             "WHERE EXTRACT(MONTH FROM o.orderDate) = :month AND EXTRACT(YEAR FROM o.orderDate) = :year " +
-            "GROUP BY DATE(o.orderDate)")
-    List<Object[]> findOrderCountsByDateInMonth(@Param("month") int month, @Param("year") int year);
+            "AND o.sellerId=:sellerId GROUP BY DATE(o.orderDate)")
+    List<Object[]> findOrderCountsByDateInMonth(String sellerId, @Param("month") int month, @Param("year") int year);
     @Override
     Optional<Order> findById(@NonNull String id);
+
+    @Query("SELECT new com.ecom.accounting.Accounting.ordermanagement.dto.OrderCountByStatusResponseDto(o.orderStatus, COUNT(o)) " +
+            "FROM Order o WHERE o.sellerId = :sellerId GROUP BY o.orderStatus")
+    List<OrderCountByStatusResponseDto> countOrdersGroupedByStatus(@Param("sellerId") String sellerId);
 }

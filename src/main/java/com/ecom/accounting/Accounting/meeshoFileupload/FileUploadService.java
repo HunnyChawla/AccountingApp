@@ -313,14 +313,14 @@ public class FileUploadService {
         }
     }
 
-    public String uploadFile(MultipartFile file,String fileType) throws IOException {
+    public String uploadFile(MultipartFile file,String fileType, String userId) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
         String filePath = uploadPath.resolve(UUID.randomUUID() + file.getOriginalFilename()).toString();
         file.transferTo(new File(filePath));
-        publishFileUploadKafkaEvents(fileType,filePath);
+        publishFileUploadKafkaEvents(fileType,filePath,userId);
         return filePath;
     }
 
@@ -340,11 +340,11 @@ public class FileUploadService {
 
     }
 
-    private void publishFileUploadKafkaEvents(String fileType,String filePath) {
+    private void publishFileUploadKafkaEvents(String fileType,String filePath,String sellerId) {
         if (fileType.equals("MEESHO_ORDER_DATA")) {
-            fileUploadDataKafkaDtoKafkaTemplate.send("meesho.order.data.file.upload", new FileUploadDataKafkaDto("hunnychawla", filePath));
+            fileUploadDataKafkaDtoKafkaTemplate.send("meesho.order.data.file.upload", new FileUploadDataKafkaDto(sellerId, filePath));
         } else if (fileType.equals("MEESHO_PAYMENTS_DATA")) {
-            fileUploadDataKafkaDtoKafkaTemplate.send("meesho.payments.data.file.upload", new FileUploadDataKafkaDto("hunnychawla", filePath));
+            fileUploadDataKafkaDtoKafkaTemplate.send("meesho.payments.data.file.upload", new FileUploadDataKafkaDto(sellerId, filePath));
         }
     }
 

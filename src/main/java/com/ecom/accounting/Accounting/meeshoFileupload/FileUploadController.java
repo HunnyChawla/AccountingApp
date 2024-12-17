@@ -65,7 +65,7 @@ public class FileUploadController {
         try {
             String userIdFromToken = TokenService.getUserIdFromToken(jwt);
             System.out.println("UserName::" + userIdFromToken);
-            String filePath = fileUploadService.uploadFile(file,fileType);
+            String filePath = fileUploadService.uploadFile(file,fileType,userIdFromToken);
             return ResponseEntity.ok(new FileUploadResponseDto("File Upload Successfully",
                     false,
                     filePath));

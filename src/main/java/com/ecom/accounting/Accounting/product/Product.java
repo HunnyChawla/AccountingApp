@@ -15,4 +15,5 @@ public class Product {
     private String skuId;
     private String productName;
     private BigDecimal cost;
+    private String sellerId;
 }
