@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaPlusCircle, FaEdit, FaTrash } from "react-icons/fa";
 import EditModal from "./EditModal";
+import Pagination from "./Pagination";
 
 const TableComponent = ({
   fetchData,
@@ -127,8 +128,15 @@ const TableComponent = ({
         </table>
       </div>
       {isPagination && (<div>Showing {fromRecord} to {toRecord} of {totalRows}</div>)}
+      {isPagination && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+        )}
 
-      {/* Pagination Controls */}
+      {/* Pagination Controls
       {isPagination && (<div style={styles.pagination}>
         <button
           style={styles.pageButton}
@@ -156,7 +164,7 @@ const TableComponent = ({
         >
           Next
         </button>
-      </div>)}
+      </div>)} */}
 
       {/* Edit Modal */}
       {showModal && (
