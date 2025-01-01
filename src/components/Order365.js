@@ -13,7 +13,6 @@ const Order365 = () => {
 
   const handleSearch = (searchData) => {
     console.log("Search Data:", searchData);
-    
   };
 
   useEffect(() => {
@@ -23,7 +22,9 @@ const Order365 = () => {
 
   const fetchCompleteOrderData = async (page, size) => {
     try {
-      return await fetchWithAuth(`http://localhost:8080/order365?page=${page}&size=${size}`);
+      return await fetchWithAuth(
+        `http://localhost:8080/order365?page=${page}&size=${size}`
+      );
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -31,21 +32,29 @@ const Order365 = () => {
 
   return (
     <div style={styles.container}>
-      <div>
-      <SearchComponent
-        dropdownOptions={dropdownOptions}
-        onSearch={handleSearch}
-        inputPlaceholder="Order id"
-        datePlaceholder="Order Date"
-        dropdownPlaceHolder="Select Order Status"
-      />
-    </div>
       {/* Order 365 Table */}
       <TableComponent
-      fetchData={fetchCompleteOrderData}
-      isPagination={true}
-      tableHeaders={["Order Id", "SKU Id", "Order Amount","Bank Settlement","Profit","Order Date","Order Status"]}
-    />
+        fetchData={fetchCompleteOrderData}
+        isPagination={true}
+        searchMetaData={{
+          inputPlaceholder: "Order Id",
+          showDropDown: true,
+          showDateSearch: true,
+          showTextSearch: true,
+          dropdownOptions,
+          datePlaceholder: "Order Date",
+          dropdownPlaceHolder: "Status",
+        }}
+        tableHeaders={[
+          "Order Id",
+          "SKU Id",
+          "Order Amount",
+          "Bank Settlement",
+          "Profit",
+          "Order Date",
+          "Order Status",
+        ]}
+      />
     </div>
   );
 };

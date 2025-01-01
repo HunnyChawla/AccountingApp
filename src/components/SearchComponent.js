@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 const SearchComponent = ({
+  showDropDown,
+  showDateSearch,
+  showTextSearch,
   dropdownOptions,
   onSearch,
   inputPlaceholder = "Enter text",
@@ -30,34 +33,34 @@ const SearchComponent = ({
 
   return (
     <div style={styles.container}>
-      <select
+      {showDropDown && (<select
         value={dropdownValue}
         onChange={handleDropdownChange}
         style={styles.dropdown}
       >
         <option value="">{dropdownPlaceHolder}</option>
-        {dropdownOptions.map((option) => (
+        {dropdownOptions?.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
-      </select>
+      </select>)}
 
-      <input
+      {showTextSearch && (<input
         type="text"
         value={inputValue}
         onChange={handleInputChange}
         placeholder={inputPlaceholder}
         style={styles.input}
-      />
+      />)}
 
-      <input
+      {showDateSearch && (<input
         type="date"
         value={dateValue}
         onChange={handleDateChange}
         placeholder={datePlaceholder}
         style={styles.datePicker}
-      />
+      />)}
 
       <button onClick={handleSearch} style={styles.button}>
         Search

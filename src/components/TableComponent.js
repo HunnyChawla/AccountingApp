@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaPlusCircle, FaEdit, FaTrash } from "react-icons/fa";
 import EditModal from "./EditModal";
 import Pagination from "./Pagination";
+import SearchComponent from "./SearchComponent";
 
 const TableComponent = ({
   fetchData,
@@ -14,7 +15,8 @@ const TableComponent = ({
   handleDeleteAction,
   tableHeaders,
   showEditAction,
-  showDeleteAction
+  showDeleteAction,
+  searchMetaData,
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -26,16 +28,16 @@ const TableComponent = ({
   const [totalPages, setTotalPages] = useState(1); // total Pages
   const [fromRecord, setFromRecord] = useState(1); // total Pages
   const [toRecord, setToRecord] = useState(1); // total Pages
-
+  const [searchData, setSearchData] = useState(null); // total Pages
 
   useEffect(() => {
-    if(!tableData) {
-        loadData(currentPage, rowsPerPage);
+    console.log("searchData", searchData);
+    if (!tableData) {
+      loadData(currentPage, rowsPerPage);
+    } else {
+      setData(tableData);
     }
-    else {
-        setData(tableData);
-    }
-  }, [currentPage, rowsPerPage, tableData]);
+  }, [currentPage, rowsPerPage, tableData, searchData]);
 
   // Handle pagination
   const handlePageChange = (page) => {
@@ -54,25 +56,33 @@ const TableComponent = ({
 
   const handleSaveChanges = (updatedItem) => {
     const isUpdated = handleEditAction(updatedItem);
-    if(isUpdated) {
-        loadData(currentPage, rowsPerPage)
+    if (isUpdated) {
+      loadData(currentPage, rowsPerPage);
     }
     closeModal();
   };
 
-
   const loadData = async (page, size) => {
     setLoading(true);
     try {
-      const response = await fetchData(page-1, size); // API call
+      const response = await fetchData(page - 1, size, searchData);
       const data = await response.json();
-      setData(data.content); // Table data
-      setTotalRows(data.totalElements); // Total rows
-      setTotalPages(data.totalPages)
-      console.log("Data ::", data)
-      setFromRecord((data.number * data.size) + 1);
-      setToRecord((data.number * data.size) + data.numberOfElements);
-      console.log(fromRecord,toRecord);
+      if (data.content) {
+        setData(data.content); // Table data
+        setTotalRows(data.totalElements); // Total rows
+        setTotalPages(data.totalPages);
+        console.log("Data ::", data);
+        setFromRecord(data.number * data.size + 1);
+        setToRecord(data.number * data.size + data.numberOfElements);
+        console.log(fromRecord, toRecord);
+      } else {
+        setData([data]);
+        setTotalPages(1);
+        setTotalRows(1); // Total rows
+        console.log("Data ::", data);
+        setFromRecord(1);
+        setToRecord(1);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -82,61 +92,86 @@ const TableComponent = ({
 
   return (
     <div>
-        { !loading && (<div style={styles.container}>
-      {showAddItemButton && (<div style={styles.actionContainer}>
-        <button style={styles.addButton} onClick={handleAddAction}>
-          <FaPlusCircle style={styles.icon} /> {addButtonText}
-        </button>
-      </div>)}
-      <div style={styles.tableContainer}>
-        <table style={styles.table}>
-          <thead>
-            <tr>
-              {tableHeaders.map((header, index) => (
-                <th key={index} style={styles.tableHeader}>
-                  {header}
-                </th>
-              ))}
-              {(showEditAction || showDeleteAction) && (<th style={styles.tableHeader}>Actions</th>)}
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr key={index} style={styles.tableRow}>
-                {Object.values(item).map((value, i) => (
-                  <td key={i} style={styles.tableCell}>
-                    {value}
-                  </td>
+      {!loading && (
+        <div style={styles.container}>
+          {showAddItemButton && (
+            <div style={styles.actionContainer}>
+              <button style={styles.addButton} onClick={handleAddAction}>
+                <FaPlusCircle style={styles.icon} /> {addButtonText}
+              </button>
+            </div>
+          )}
+          <SearchComponent
+            onSearch={setSearchData}
+            inputPlaceholder={searchMetaData?.inputPlaceholder}
+            showDropDown={searchMetaData?.showDropDown}
+            showDateSearch={searchMetaData?.showDateSearch}
+            showTextSearch={searchMetaData?.showTextSearch}
+            dropdownOptions={searchMetaData?.dropdownOptions}
+            datePlaceholder={searchMetaData?.datePlaceholder}
+            dropdownPlaceHolder={searchMetaData?.dropdownPlaceHolder}
+          />
+          <div style={styles.tableContainer}>
+            <table style={styles.table}>
+              <thead>
+                <tr>
+                  {tableHeaders.map((header, index) => (
+                    <th key={index} style={styles.tableHeader}>
+                      {header}
+                    </th>
+                  ))}
+                  {(showEditAction || showDeleteAction) && (
+                    <th style={styles.tableHeader}>Actions</th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((item, index) => (
+                  <tr key={index} style={styles.tableRow}>
+                    {Object.values(item).map((value, i) => (
+                      <td key={i} style={styles.tableCell}>
+                        {value}
+                      </td>
+                    ))}
+                    {(showEditAction || showDeleteAction) && (
+                      <td style={styles.tableCell}>
+                        {showEditAction && (
+                          <button
+                            style={styles.editButton}
+                            onClick={() => handleEditClick(item)}
+                          >
+                            <FaEdit style={styles.icon} />
+                          </button>
+                        )}
+                        {showDeleteAction && (
+                          <button
+                            style={styles.deleteButton}
+                            onClick={() => handleDeleteAction(item)}
+                          >
+                            <FaTrash style={styles.icon} />
+                          </button>
+                        )}
+                      </td>
+                    )}
+                  </tr>
                 ))}
-                {(showEditAction || showDeleteAction) && (<td style={styles.tableCell}>
-                  {showEditAction && (<button
-                    style={styles.editButton}
-                    onClick={() => handleEditClick(item)}
-                  >
-                    <FaEdit style={styles.icon} />
-                  </button>)}
-                  {showDeleteAction && (<button
-                    style={styles.deleteButton}
-                    onClick={() => handleDeleteAction(item)}
-                  >
-                    <FaTrash style={styles.icon} />
-                  </button>)}
-                </td>)}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      {isPagination && (<div>Showing {fromRecord} to {toRecord} of {totalRows}</div>)}
-      {isPagination && (
+              </tbody>
+            </table>
+          </div>
+          {isPagination && (
+            <div>
+              Showing {fromRecord} to {toRecord} of {totalRows}
+            </div>
+          )}
+          {isPagination && (
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
             />
-        )}
+          )}
 
-      {/* Pagination Controls
+          {/* Pagination Controls
       {isPagination && (<div style={styles.pagination}>
         <button
           style={styles.pageButton}
@@ -166,16 +201,18 @@ const TableComponent = ({
         </button>
       </div>)} */}
 
-      {/* Edit Modal */}
-      {showModal && (
-        <EditModal
-          show={showModal}
-          onClose={closeModal}
-          onSave={handleSaveChanges}
-          data={selectedRow}
-        />
+          {/* Edit Modal */}
+          {showModal && (
+            <EditModal
+              show={showModal}
+              onClose={closeModal}
+              onSave={handleSaveChanges}
+              data={selectedRow}
+            />
+          )}
+        </div>
       )}
-    </div>)}</div>
+    </div>
   );
 };
 

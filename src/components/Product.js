@@ -14,8 +14,11 @@ const Products = () => {
     // console.log("fetchProducts called")
   }, []);
 
-  const fetchProducts = async (page,size) => {
+  const fetchProducts = async (page,size,searchData) => {
     try {
+      if(searchData && searchData.inputValue) {
+        return await fetchWithAuth(`http://localhost:8080/products/${searchData.inputValue}`);
+      }
       return await fetchWithAuth(`http://localhost:8080/products?page=${page}&size=${size}`);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -73,6 +76,10 @@ const Products = () => {
       handleEditAction={handleEditProduct}
       handleDeleteAction={null}
       tableHeaders={["SKU", "Product Name", "Cost"]}
+      searchMetaData={{
+        inputPlaceholder: "SKU ID",
+        showTextSearch: true
+      }}
     />
     </div>
   );
