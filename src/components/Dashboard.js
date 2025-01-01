@@ -4,6 +4,7 @@ import OrdersChart from "./OrdersChart";
 import OrdersCountByStatusChart from "./OrdersCountByStatusChart";
 import OrdersTable from "./ordersTable";
 import { fetchWithAuth } from "../Util";
+import ProfitLossChart from "./ProfitAndLossChart";
 
 const Dashboard = () => {
     const [ordersData, setOrdersData] = useState([]);
@@ -101,7 +102,9 @@ const Dashboard = () => {
       <ProfitLossCard profit={totalProfit} loss={totalLoss} />
         <OrdersChart data={ordersData} />
         <OrdersCountByStatusChart data={orderCountData} />
+        
       </div>
+      <ProfitLossChart/>
       {/* Add more analytics components */}
     </div>
   );
@@ -112,7 +115,7 @@ const styles = {
       display: "flex", // Arrange charts side by side
       flexWrap: "wrap", // Allow charts to wrap to the next row
       justifyContent: "space-between", // Add space between charts
-      padding: "10px",
+      padding: "20px",
     },
   };
   

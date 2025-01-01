@@ -63,7 +63,7 @@ const FileUpload = () => {
           style={styles.dropdown}
         >
           <option value="MEESHO_ORDER_DATA">Meesho Order Data</option>
-          <option value="MEESHO_PAYMENT_DATA">Meesho Payment Data</option>
+          <option value="MEESHO_PAYMENTS_DATA">Meesho Payment Data</option>
           <option value="FLIPKART_ORDER_DATA">Flipkart Order Data</option>
           <option value="FLIPKART_PAYMENT_DATA">Flipkart Payment Data</option>
           <option value="AMAZON_ORDER_DATA">Amazon Order Data</option>

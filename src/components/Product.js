@@ -14,9 +14,9 @@ const Products = () => {
     // console.log("fetchProducts called")
   }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page,size) => {
     try {
-      return await fetchWithAuth("http://localhost:8080/products");
+      return await fetchWithAuth(`http://localhost:8080/products?page=${page}&size=${size}`);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -65,6 +65,7 @@ const Products = () => {
       {/* Products Table */}
       <TableComponent
       fetchData={fetchProducts}
+      isPagination={true}
       showAddItemButton={true}
       handleAddAction={handleAddProduct}
       addButtonText={"Add Product"}

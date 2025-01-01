@@ -23,6 +23,8 @@ const TableComponent = ({
   const [currentPage, setCurrentPage] = useState(1); // Current page
   const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
   const [totalPages, setTotalPages] = useState(1); // total Pages
+  const [fromRecord, setFromRecord] = useState(1); // total Pages
+  const [toRecord, setToRecord] = useState(1); // total Pages
 
 
   useEffect(() => {
@@ -67,6 +69,9 @@ const TableComponent = ({
       setTotalRows(data.totalElements); // Total rows
       setTotalPages(data.totalPages)
       console.log("Data ::", data)
+      setFromRecord((data.number * data.size) + 1);
+      setToRecord((data.number * data.size) + data.numberOfElements);
+      console.log(fromRecord,toRecord);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -121,7 +126,7 @@ const TableComponent = ({
           </tbody>
         </table>
       </div>
-      {isPagination && (<div>Total Rows: {totalRows} Rows Per Page: {rowsPerPage}</div>)}
+      {isPagination && (<div>Showing {fromRecord} to {toRecord} of {totalRows}</div>)}
 
       {/* Pagination Controls */}
       {isPagination && (<div style={styles.pagination}>
