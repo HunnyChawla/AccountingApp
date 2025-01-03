@@ -1,51 +1,99 @@
-import React from "react";
-import { Bar } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-
-// Register the required components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+import React, { useEffect, useState } from "react";
+import * as echarts from "echarts";
+import "./OrdersCountByStatusChart.css"; // Import a CSS file for styling
 
 const OrdersCountByStatusChart = ({ data }) => {
-  // Prepare the chart data
-  const chartData = {
-    labels: data.map((item) => item.orderStatus),
-    datasets: [
-      {
-        label: "Orders",
-        data: data.map((item) => item.count),
-        backgroundColor: "rgba(75, 192, 192, 0.6)", // Light green
-      }
-    ],
-  };
+  const [visibleCategories, setVisibleCategories] = useState(data.map((item) => item.orderStatus));
 
-  // Chart options
-  const options = {
-    responsive: true, // Ensures the chart resizes dynamically
-    maintainAspectRatio: false, // Allows custom height and width
-    plugins: {
-      legend: {
-        position: "top",
+  useEffect(() => {
+    const chartDom = document.getElementById("orders-status-chart");
+    const myChart = echarts.init(chartDom);
+
+    const filteredData = data.filter((item) => visibleCategories.includes(item.orderStatus));
+
+    // Prepare the chart options
+    const option = {
+      title: {
+        text: "Order Count By Status",
+        left: "center",
       },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
+      tooltip: {
+        trigger: "item",
       },
-    },
+      xAxis: {
+        type: "category",
+        data: filteredData.map((item) => item.orderStatus),
+        axisLabel: {
+          rotate: 45, // Rotate labels for better visibility
+          interval: 0, // Show all labels
+        },
+      },
+      yAxis: {
+        type: "value",
+      },
+      series: [
+        {
+          name: "Orders",
+          type: "bar",
+          data: filteredData.map((item) => item.count),
+          itemStyle: {
+            color: (params) => {
+              const colors = [
+                "#5470C6",
+                "#91CC75",
+                "#EE6666",
+                "#FAC858",
+                "#73C0DE",
+                "#3BA272",
+                "#FC8452",
+                "#9A60B4",
+                "#EA7CCC",
+              ];
+              return colors[params.dataIndex % colors.length];
+            },
+          },
+        },
+      ],
+    };
+
+    // Set the chart options
+    myChart.setOption(option);
+
+    // Cleanup on component unmount
+    return () => {
+      myChart.dispose();
+    };
+  }, [data, visibleCategories]);
+
+  const toggleCategory = (category) => {
+    setVisibleCategories((prev) =>
+      prev.includes(category)
+        ? prev.filter((item) => item !== category)
+        : [...prev, category]
+    );
   };
 
   return (
-    <div style={{ width: "45%", height: "300px", margin: "10px" }}>
+    <div>
       <h3>Order Count By Status</h3>
-      <Bar data={chartData} options={options} />
+      <div className="checkbox-container" style={{ marginBottom: "10px" }}>
+        {data.map((item) => (
+          <label
+            key={item.orderStatus}
+            className={`custom-checkbox ${
+              visibleCategories.includes(item.orderStatus) ? "checked" : ""
+            }`}
+          >
+            <input
+              type="checkbox"
+              checked={visibleCategories.includes(item.orderStatus)}
+              onChange={() => toggleCategory(item.orderStatus)}
+            />
+            <span className="checkbox-label">{item.orderStatus}</span>
+          </label>
+        ))}
+      </div>
+      <div id="orders-status-chart" style={{ width: "100%", height: "100%" }}></div>
     </div>
   );
 };

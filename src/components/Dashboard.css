@@ -1,0 +1,27 @@
+.dashboard-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.kpi-section {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.kpi {
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    width: 30%;
+}
+
+.charts-section {
+    display: flex;
+    justify-content: space-around;
+}
+
+.chart-container {
+    width: 45%;
+}

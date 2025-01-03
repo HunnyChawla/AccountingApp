@@ -11,6 +11,7 @@ import LoginRegistration from './components/LoginRegistration';
 import LogoutScreen from './components/LogoutScreen';
 import { useSelector } from 'react-redux';
 import Order365 from './components/Order365';
+import NewDashboard from './components/NewDashboard';
 
 const App = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);

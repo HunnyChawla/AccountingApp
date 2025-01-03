@@ -27,11 +27,6 @@ const ProfitLossChart = () => {
                             if (!response.ok) throw new Error("Failed to fetch orders data");
                     
                             const apiResponse = await response.json();
-                // Mock API response
-                // const apiResponse = [
-                //     { month: 11, year: 2024, profitAndLoss: 7436.29 },
-                //     { month: 12, year: 2024, profitAndLoss: 4353.70 },
-                // ];
 
                 // Ensure apiResponse is an array
                 if (!Array.isArray(apiResponse)) {
@@ -80,7 +75,7 @@ const ProfitLossChart = () => {
 
     return (
         <div>
-            <h2>Profit and Loss Chart</h2>
+            <h3>Profit and Loss Chart</h3>
             <Bar data={chartData} options={chartOptions} />
         </div>
     );
