@@ -43,13 +43,11 @@ const ProfitLossCard = ({ profit, loss }) => {
 
 const styles = {
   card: {
-    width: "45%", // Adjust width for responsiveness
     padding: "15px",
     border: "1px solid #ddd",
     borderRadius: "8px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     backgroundColor: "#fff",
-    margin: "10px",
     textAlign: "center",
     overflow: "hidden",
   },

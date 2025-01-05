@@ -7,6 +7,8 @@ import ProfitLossChart from "./ProfitAndLossChart";
 import SearchComponent from "./SearchComponent";
 import Card from "./Card";
 import Layout from "./Layout";
+import DashboardTile from "./DashboardTile";
+import { FcSalesPerformance } from "react-icons/fc";
 
 const Dashboard = () => {
   const [ordersData, setOrdersData] = useState([]);
@@ -14,21 +16,11 @@ const Dashboard = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1); // Current month (1-based)
   const [year, setYear] = useState(new Date().getFullYear()); // Current year
   const [orderCountData, setOrderCountData] = useState([]);
-  const [cards, setCards] = useState([
-    { id: 1, title: "Sales Overview", content: "View the latest sales data." },
-    {
-      id: 2,
-      title: "Profit Analysis",
-      content: "Analyze profits by category.",
-    },
-    { id: 3, title: "Orders", content: "Track recent customer orders." },
-    { id: 4, title: "Inventory", content: "Manage your stock effectively." },
-    {
-      id: 5,
-      title: "Customer Insights",
-      content: "Understand customer trends.",
-    },
-  ]);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const [totalPayments, setTotalPayments] = useState(0);
+  const [totalLoss, setTotalLoss] = useState(0);
+  const [totalProfit, setTotalProfit] = useState(0);
+
 
   const fetchOrderCountData = async () => {
     const response = await fetchWithAuth(
@@ -39,6 +31,22 @@ const Dashboard = () => {
 
     const data = await response.json();
     setOrderCountData(data);
+  };
+
+  const fetchDashboardMetrics = async () => {
+    const response = await fetchWithAuth(
+      `http://localhost:8087/dashboard-metrics?month=${month}&year=${year}`
+    );
+
+    if (!response.ok) {
+      return;
+    };
+
+    const data = await response.json();
+    setTotalOrders(data.totalOrders);
+    setTotalLoss(data.totalLoss);
+    setTotalProfit(data.totalProfit);
+    setTotalPayments(data.totalPayments);
   };
 
   useEffect(() => {
@@ -71,6 +79,7 @@ const Dashboard = () => {
 
     fetchOrders();
     fetchOrderCountData();
+    fetchDashboardMetrics();
   }, [month, year]); // Re-fetch when month or year changes
 
   if (loading) return <p>Loading...</p>;
@@ -86,9 +95,6 @@ const Dashboard = () => {
     { date: "2024-12-04", profit: 3000, loss: 1000 },
   ];
 
-  // Calculate total profit and loss
-  const totalProfit = 100;
-  const totalLoss = 20;
 
   const handleAction = (id) => {
     alert(`Action triggered for card ${id}`);
@@ -125,31 +131,35 @@ const Dashboard = () => {
           </select>
         </label>
       </div>
-      <Layout>
-      <ProfitLossCard profit={totalProfit} loss={totalLoss} />
-        <OrdersChart data={ordersData} />
-        <OrdersCountByStatusChart data={orderCountData} />
-        <ProfitLossChart />
+      <Layout rows={1} columns={5}>
+        <DashboardTile title="Total Orders" value={totalOrders} color="#ff6347" />
+        <DashboardTile title="Net Profit" value={totalProfit+totalLoss} color="#4caf50" customIcon={<FcSalesPerformance size="3em"></FcSalesPerformance>} />
+        <DashboardTile title="Total Payments" value={totalPayments} color="#2196f3" />
+        <DashboardTile title="Total Profit" value={totalProfit} color="#ff9800" />
+        <DashboardTile title="Total Loss" value={totalLoss} color="#f44336" />
       </Layout>
-      <div style={styles.chartContainer}>
-        {/* <ProfitLossCard profit={totalProfit} loss={totalLoss} /> */}
-        {/* <OrdersChart data={ordersData} /> */}
-        {/* <OrdersCountByStatusChart data={orderCountData} /> */}
-      </div>
-      {/* <div style={styles.chartContainer}><ProfitLossChart/></div> */}
-
-      {/* Add more analytics components */}
+      <Layout rows={3} columns={1}>
+        <Layout rows={1} columns={1}>
+          <OrdersChart data={ordersData} />
+        </Layout>
+        <Layout rows={1} columns={1}>
+          <OrdersCountByStatusChart data={orderCountData} />
+        </Layout>
+        <Layout rows={1} columns={1}>
+          {/* <ProfitLossChart /> */}
+        </Layout>
+      </Layout>
     </div>
   );
 };
 
 const styles = {
-  chartContainer: {
-    display: "flex", // Arrange charts side by side
-    flexWrap: "wrap", // Allow charts to wrap to the next row
-    justifyContent: "space-between", // Add space between charts
-    padding: "20px",
-  },
+  // chartContainer: {
+  //   display: "flex", // Arrange charts side by side
+  //   flexWrap: "wrap", // Allow charts to wrap to the next row
+  //   justifyContent: "space-between", // Add space between charts
+  //   padding: "20px",
+  // },
 };
 
 export default Dashboard;

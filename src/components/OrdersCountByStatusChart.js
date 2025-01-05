@@ -93,7 +93,7 @@ const OrdersCountByStatusChart = ({ data }) => {
           </label>
         ))}
       </div>
-      <div id="orders-status-chart" style={{ width: "100%", height: "100%" }}></div>
+      <div id="orders-status-chart" style={{ width: "100%", height: "400px" }}></div>
     </div>
   );
 };

@@ -76,7 +76,7 @@ const OrdersChart = ({ data }) => {
           <option value="month">Month</option>
         </select>
       </div>
-      <div id="orders-chart" style={{ width: "100%", height: "100%" }}></div>
+      <div id="orders-chart" style={{ width: "100%", height: "400px" }}></div>
     </div>
   );
 };
