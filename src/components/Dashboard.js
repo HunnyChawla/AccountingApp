@@ -1,39 +1,27 @@
 import React, { useEffect, useState } from "react";
-import ProfitLossCard from "./ProfitLossCard";
-import OrdersChart from "./OrdersChart";
+import OrdersChart from "./OrdersChart/OrdersChart";
 import OrdersCountByStatusChart from "./OrdersCountByStatusChart";
 import { fetchWithAuth } from "../Util";
-import ProfitLossChart from "./ProfitAndLossChart";
-import SearchComponent from "./SearchComponent";
-import Card from "./Card";
 import Layout from "./Layout";
 import DashboardTile from "./DashboardTile";
 import { FcSalesPerformance } from "react-icons/fc";
+import OrderCountStatusChartContainer from "./OrdersCountStatusChartContainer";
+import OrdersChartConatiner from "./OrdersChart/OrdersChartContainer";
+import { setMonth, setYear, setDate } from '../Store/slice/UserInputSlice';
+import { useDispatch, useSelector } from "react-redux";
 
 const Dashboard = () => {
   const [ordersData, setOrdersData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [month, setMonth] = useState(new Date().getMonth() + 1); // Current month (1-based)
-  const [year, setYear] = useState(new Date().getFullYear()); // Current year
-  const [orderCountData, setOrderCountData] = useState([]);
+  const [loading1, setLoading1] = useState(false);
   const [totalOrders, setTotalOrders] = useState(0);
   const [totalPayments, setTotalPayments] = useState(0);
   const [totalLoss, setTotalLoss] = useState(0);
   const [totalProfit, setTotalProfit] = useState(0);
-
-
-  const fetchOrderCountData = async () => {
-    const response = await fetchWithAuth(
-      `http://localhost:8080/orders/countByOrderStatus`
-    );
-
-    if (!response.ok) throw new Error("Failed to fetch orders data");
-
-    const data = await response.json();
-    setOrderCountData(data);
-  };
+  const dispatch = useDispatch();
+  const { month, year } = useSelector((state) => state.userInput);
 
   const fetchDashboardMetrics = async () => {
+   
     const response = await fetchWithAuth(
       `http://localhost:8087/dashboard-metrics?month=${month}&year=${year}`
     );
@@ -50,39 +38,10 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        setLoading(true);
-
-        // Construct API URL with query parameters
-        const response = await fetchWithAuth(
-          `http://localhost:8080/orders?month=${month}&year=${year}`
-        );
-
-        if (!response.ok) throw new Error("Failed to fetch orders data");
-
-        const data = await response.json();
-
-        // Transform API data if necessary
-        const formattedData = data.ordersData.map((item) => ({
-          date: item.date,
-          orders: item.orders,
-        }));
-        console.log(formattedData);
-        setOrdersData(formattedData);
-      } catch (error) {
-        console.error("Error fetching orders data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-    fetchOrderCountData();
     fetchDashboardMetrics();
   }, [month, year]); // Re-fetch when month or year changes
 
-  if (loading) return <p>Loading...</p>;
+  if (loading1) return <p>Loading...</p>;
 
   // useEffect(() => {
 
@@ -108,7 +67,7 @@ const Dashboard = () => {
           Month:
           <select
             value={month}
-            onChange={(e) => setMonth(Number(e.target.value))}
+            onChange={(e) => dispatch(setMonth(Number(e.target.value)))}
           >
             {[...Array(12).keys()].map((m) => (
               <option key={m + 1} value={m + 1}>
@@ -121,7 +80,7 @@ const Dashboard = () => {
           Year:
           <select
             value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
+            onChange={(e) => dispatch(setYear(Number(e.target.value)))}
           >
             {[2023, 2024, 2025].map((y) => (
               <option key={y} value={y}>
@@ -140,10 +99,11 @@ const Dashboard = () => {
       </Layout>
       <Layout rows={3} columns={1}>
         <Layout rows={1} columns={1}>
-          <OrdersChart data={ordersData} />
+        <OrdersChartConatiner/>
         </Layout>
         <Layout rows={1} columns={1}>
-          <OrdersCountByStatusChart data={orderCountData} />
+          {/* <OrdersCountByStatusChart data={data} /> */}
+          <OrderCountStatusChartContainer/>
         </Layout>
         <Layout rows={1} columns={1}>
           {/* <ProfitLossChart /> */}

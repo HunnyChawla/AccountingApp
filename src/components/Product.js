@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import TableComponent from "./TableComponent";
 import { fetchWithAuth } from "../Util";
+import TemplateHandler from "./TemplateHandler";
+import { useAlert } from "./AlertManager";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [newProduct, setNewProduct] = useState({ sku: "", name: "", cost: 0 });
   const [editProduct, setEditProduct] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const { showAlert } = useAlert();
 
   useEffect(() => {
     // Fetch products data from the API
@@ -63,8 +66,47 @@ const Products = () => {
     }
   };
 
+    const handleUpload = async (file) => {
+      if (!file) {
+        alert("Please select files to upload.");
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append("file", file); // Append files to FormData
+  
+      try {
+        const response = await fetchWithAuth("http://localhost:8087/api/product/upload", {
+          method: "POST",
+          body: formData,
+        });
+  
+        if (!response.ok) {
+          showAlert({
+            message: "Something went wrong",
+            type: "error",
+          });
+        };
+  
+        const result = await response.body;
+        showAlert({
+          message: "File Uploaded Successfully",
+          type: "success",
+        });
+        
+        console.log("Server response:", result);
+
+      } catch (error) {
+        console.error("Error uploading files:", error);
+      }
+    };
+
   return (
     <div style={styles.container}>
+    <TemplateHandler
+      downloadTemplateUrl={"/asset/Product_Template.xlsx"}
+      onTemplateUpload={handleUpload}
+    ></TemplateHandler>
       {/* Products Table */}
       <TableComponent
       fetchData={fetchProducts}
