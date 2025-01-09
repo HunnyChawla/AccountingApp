@@ -4,9 +4,10 @@ import { fetchWithAuth } from '../../Util';
 const ACCOUNT_APP_API_URL = process.env.REACT_APP_ACCOUNT_APP_API_URL;
 
 // Async thunk for API call
-export const fetchCountByOrderStatus = createAsyncThunk('data/fetchData', async () => {
+export const fetchCountByOrderStatus = createAsyncThunk('data/ordersCountByStatus', async (_, { getState }) => {
     console.log("api url ",ACCOUNT_APP_API_URL);
-  const response = await fetchWithAuth(`${ACCOUNT_APP_API_URL}/orders/countByOrderStatus`);
+    const { month, year } = getState().userInput; // Access state
+  const response = await fetchWithAuth(`${ACCOUNT_APP_API_URL}/orders/countByOrderStatus?month=${month}&year=${year}`);
     const data = await response.json()
   return data;
 });

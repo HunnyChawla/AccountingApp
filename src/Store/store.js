@@ -4,6 +4,7 @@ import authReducer from './slice/authSlice';
 import orderCountReducer from './slice/orderCountSlice';
 import ordersReducer from './slice/ordersSlice';
 import userInputReducer from './slice/UserInputSlice'
+import dashboardMetricsReducer from './slice/dashboardMetricsSlice'
 import storage from 'redux-persist/lib/storage';
 import { persistStore, persistReducer } from 'redux-persist';
 import {thunk} from 'redux-thunk';  // Import redux-thunk to handle async actions
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   auth: authReducer,       // Slice to be persisted
   orderCount: orderCountReducer, // Async actions handled in orderCountReducer
   userInput: userInputReducer,
-  orders: ordersReducer
+  orders: ordersReducer,
+  dashboardMetrics: dashboardMetricsReducer
 });
 
 // Persist the root reducer

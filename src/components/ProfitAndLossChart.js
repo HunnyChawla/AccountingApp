@@ -1,84 +1,78 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Bar } from "react-chartjs-2";
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
 } from "chart.js";
-import { fetchWithAuth } from "../Util";
 
+// Register the necessary components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ProfitLossChart = () => {
-    const [chartData, setChartData] = useState(null); // Initially null
-    const [chartOptions, setChartOptions] = useState({});
+  // Sample data
+  const data = {
+    labels: ["January", "February", "March", "April"], // X-axis labels
+    datasets: [
+      {
+        label: "Profit",
+        data: [5000, 7000, 8000, 6000], // Profit data
+        backgroundColor: "rgba(75, 192, 192, 0.6)", // Bar color for Profit
+        borderWidth: 0, // No border
+      },
+      {
+        label: "Loss",
+        data: [2000, 3000, 2500, 4000], // Loss data
+        backgroundColor: "rgba(255, 99, 132, 0.6)", // Bar color for Loss
+        borderWidth: 0, // No border
+      },
+      {
+        label: "Net Profit",
+        data: [3000, 4000, 5500, 2000], // Net Profit data
+        backgroundColor: "rgba(54, 162, 235, 0.6)", // Bar color for Net Profit
+        borderWidth: 0, // No border
+      },
+    ],
+  };
 
-    useEffect(() => {
-        // Simulate fetching data from the API
-        const fetchData = async () => {
-            try {
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top", // Position of the legend
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let value = context.raw;
+            return `${context.dataset.label}: $${value}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        title: {
+          display: true,
+          text: "Months", // Label for X-axis
+        },
+        stacked: false, // Disable stacking for clustered bars
+      },
+      y: {
+        title: {
+          display: true,
+          text: "Amount (in USD)", // Label for Y-axis
+        },
+        beginAtZero: true, // Ensure Y-axis starts at zero
+      },
+    },
+  };
 
-                const response =  await fetchWithAuth(`http://localhost:8087/api/profitAndLossByMonth`);
-                    
-                            if (!response.ok) throw new Error("Failed to fetch orders data");
-                    
-                            const apiResponse = await response.json();
-
-                // Ensure apiResponse is an array
-                if (!Array.isArray(apiResponse)) {
-                    throw new Error("API response is not an array");
-                }
-
-                const labels = apiResponse.map(item => `${item.month}/${item.year}`);
-                const data = apiResponse.map(item => item.profitAndLoss);
-
-                setChartData({
-                    labels,
-                    datasets: [
-                        {
-                            label: "Profit and Loss",
-                            data,
-                            backgroundColor: "rgba(75, 192, 192, 0.6)",
-                            borderColor: "rgba(75, 192, 192, 1)",
-                            borderWidth: 1,
-                        },
-                    ],
-                });
-
-                setChartOptions({
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: "top",
-                        },
-                        title: {
-                            display: true,
-                            text: "Monthly Profit and Loss",
-                        },
-                    },
-                });
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    if (!chartData) {
-        return <p>Loading...</p>; // Handle loading state
-    }
-
-    return (
-        <div>
-            <h3>Profit and Loss Chart</h3>
-            <Bar data={chartData} options={chartOptions} />
-        </div>
-    );
+  return <Bar data={data} options={options} />;
 };
 
 export default ProfitLossChart;

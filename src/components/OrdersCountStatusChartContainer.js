@@ -6,6 +6,7 @@ import OrdersCountByStatusChart from "./OrdersCountByStatusChart";
 
 const OrderCountStatusChartContainer = () => {
     const dispatch = useDispatch();
+    const { month, year } = useSelector((state) => state.userInput);
     const { data, loading, error  } = useSelector((state) =>{
       console.log(state);
       return state.orderCount;
@@ -13,7 +14,7 @@ const OrderCountStatusChartContainer = () => {
     useEffect(()=> {
         dispatch(fetchCountByOrderStatus());
         console.log("Hello");
-    },[]);
+    },[month,year]);
     return(
         <div>
             {!loading && (<OrdersCountByStatusChart data={data} />)}
