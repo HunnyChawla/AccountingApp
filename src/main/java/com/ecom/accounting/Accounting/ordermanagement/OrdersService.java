@@ -1,7 +1,8 @@
 package com.ecom.accounting.Accounting.ordermanagement;
 
-import com.ecom.accounting.Accounting.ordermanagement.dto.OrderCountByStatusResponseDto;
-import com.ecom.accounting.Accounting.ordermanagement.dto.OrderCountDto;
+import com.ecom.accounting.dtos.OrderCountByStatusResponseDto;
+import com.ecom.accounting.dtos.OrderCountDto;
+import com.ecom.accounting.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ public class OrdersService {
     @Autowired
     private OrdersRepository ordersRepository;
 
-    public List<OrderCountDto> getOrderCountsByDateInMonth(String sellerId,int month, int year) {
+    public List<OrderCountDto> getOrderCountsByDateInMonth(String sellerId, int month, int year) {
         List<Object[]> results = ordersRepository.findOrderCountsByDateInMonth(sellerId,month, year);
 
         // Convert results into a map for better usability
@@ -38,7 +39,7 @@ public class OrdersService {
         return ordersRepository.saveAll(orders);
     }
 
-    public List<OrderCountByStatusResponseDto> getOrderCountByStatusResponseDtos(String sellerId) {
-        return ordersRepository.countOrdersGroupedByStatus(sellerId);
+    public List<OrderCountByStatusResponseDto> getOrderCountByStatusResponseDtos(String sellerId, long month, long year) {
+        return ordersRepository.countOrdersByMonthAndYearGroupedByStatus(sellerId, month, year);
     }
 }

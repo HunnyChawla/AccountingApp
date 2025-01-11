@@ -1,6 +1,6 @@
 package com.ecom.accounting.Accounting.kafkaService;
 
-import com.ecom.accounting.Accounting.meeshoFileupload.MeeshoPaymentData;
+import com.ecom.accounting.entities.MeeshoPaymentData;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.*;

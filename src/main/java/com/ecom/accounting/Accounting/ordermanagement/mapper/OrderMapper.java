@@ -1,7 +1,8 @@
 package com.ecom.accounting.Accounting.ordermanagement.mapper;
 
-import com.ecom.accounting.Accounting.ordermanagement.Order;
-import com.ecom.accounting.Accounting.ordermanagement.dto.OrderDto;
+
+import com.ecom.accounting.dtos.OrderDto;
+import com.ecom.accounting.entities.Order;
 
 public class OrderMapper {
 

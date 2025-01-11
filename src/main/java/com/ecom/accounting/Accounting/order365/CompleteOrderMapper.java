@@ -1,6 +1,7 @@
 package com.ecom.accounting.Accounting.order365;
 
-import com.ecom.accounting.Accounting.order365.dto.CompleteOrderDto;
+import com.ecom.accounting.dtos.CompleteOrderDto;
+import com.ecom.accounting.entities.CompleteOrderData;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

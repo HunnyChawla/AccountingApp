@@ -1,5 +1,6 @@
 package com.ecom.accounting.Accounting.meeshoFileupload;
 
+import com.ecom.accounting.entities.MeeshoOrderData;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

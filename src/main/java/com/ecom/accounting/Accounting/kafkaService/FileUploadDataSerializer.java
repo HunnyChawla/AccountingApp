@@ -1,7 +1,7 @@
 package com.ecom.accounting.Accounting.kafkaService;
 
-import com.ecom.accounting.Accounting.dto.FileUploadDataKafkaDto;
-import com.ecom.accounting.Accounting.meeshoFileupload.MeeshoPaymentData;
+
+import com.ecom.accounting.dtos.FileUploadDataKafkaDto;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.io.ByteArrayOutputStream;

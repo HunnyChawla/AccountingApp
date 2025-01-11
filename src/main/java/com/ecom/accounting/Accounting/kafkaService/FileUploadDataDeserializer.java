@@ -1,13 +1,11 @@
 package com.ecom.accounting.Accounting.kafkaService;
 
-import com.ecom.accounting.Accounting.dto.FileUploadDataKafkaDto;
-import com.ecom.accounting.Accounting.meeshoFileupload.MeeshoPaymentData;
+import com.ecom.accounting.dtos.FileUploadDataKafkaDto;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.List;
 
 public class FileUploadDataDeserializer implements Deserializer<FileUploadDataKafkaDto> {
     @Override

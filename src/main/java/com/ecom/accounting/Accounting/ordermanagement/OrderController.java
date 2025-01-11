@@ -1,12 +1,13 @@
 package com.ecom.accounting.Accounting.ordermanagement;
 
 import com.ecom.accounting.Accounting.meeshoFileupload.FileUploadService;
-import com.ecom.accounting.Accounting.ordermanagement.dto.OrderCountByStatusResponseDto;
-import com.ecom.accounting.Accounting.ordermanagement.dto.OrderCountDto;
-import com.ecom.accounting.Accounting.ordermanagement.dto.OrderDto;
-import com.ecom.accounting.Accounting.ordermanagement.dto.OrdersDataResponseDto;
 import com.ecom.accounting.Accounting.ordermanagement.mapper.OrderMapper;
 import com.ecom.accounting.Accounting.security.TokenService;
+import com.ecom.accounting.dtos.OrderCountByStatusResponseDto;
+import com.ecom.accounting.dtos.OrderCountDto;
+import com.ecom.accounting.dtos.OrderDto;
+import com.ecom.accounting.dtos.OrdersDataResponseDto;
+import com.ecom.accounting.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,9 +46,10 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
     @GetMapping("/countByOrderStatus")
-    public ResponseEntity<List<OrderCountByStatusResponseDto>> getOrders(@AuthenticationPrincipal Jwt token) {
+    @Deprecated
+    public ResponseEntity<List<OrderCountByStatusResponseDto>> getOrdersCountByStatus(@AuthenticationPrincipal Jwt token, @RequestParam("month") long month, @RequestParam("year") long year) {
         String userIdFromToken = TokenService.getUserIdFromToken(token);
-        List<OrderCountByStatusResponseDto> orderCountByStatusResponseDtos = ordersService.getOrderCountByStatusResponseDtos(userIdFromToken);
+        List<OrderCountByStatusResponseDto> orderCountByStatusResponseDtos = ordersService.getOrderCountByStatusResponseDtos(userIdFromToken,month,year);
         return ResponseEntity.ok(orderCountByStatusResponseDtos);
     }
 }

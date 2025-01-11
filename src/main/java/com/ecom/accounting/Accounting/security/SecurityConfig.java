@@ -1,7 +1,9 @@
 package com.ecom.accounting.Accounting.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -10,6 +12,11 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 
 @Configuration
 public class SecurityConfig {
+
+    private final String KEYCLOAK_SERVER = "spring.security.oauth2.resourceserver.jwt.issuer-uri";
+
+    @Autowired
+    private Environment environment;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,7 +35,7 @@ public class SecurityConfig {
     @Bean
     public JwtDecoder jwtDecoder() {
         // Point this to your Keycloak public key URL
-        return NimbusJwtDecoder.withJwkSetUri("http://localhost:8090/realms/Security-Realm/protocol/openid-connect/certs")
+        return NimbusJwtDecoder.withJwkSetUri(environment.getProperty(KEYCLOAK_SERVER)+"/protocol/openid-connect/certs")
                 .build();
     }
 

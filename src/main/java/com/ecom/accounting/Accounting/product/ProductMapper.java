@@ -1,8 +1,8 @@
 package com.ecom.accounting.Accounting.product;
 
-import com.ecom.accounting.Accounting.order365.CompleteOrderData;
-import com.ecom.accounting.Accounting.order365.CompleteOrderMapper;
-import com.ecom.accounting.Accounting.order365.dto.CompleteOrderDto;
+import com.ecom.accounting.dtos.ProductRequestDto;
+import com.ecom.accounting.dtos.ProductResponseDto;
+import com.ecom.accounting.entities.Product;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

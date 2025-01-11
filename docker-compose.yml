@@ -1,0 +1,83 @@
+version: "3.9"
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak-temp
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL_DATABASE: keycloakdb
+      KC_DB_URL_HOST: postgres-db
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak123
+      KC_HOSTNAME: localhost
+    ports:
+      - "8084:8080" # Expose Keycloak on external port 8081
+    depends_on:
+      - postgres-db
+    command: start-dev
+
+  springboot-app:
+    build:
+      context: .
+      dockerfile: DockerFile
+    container_name: springboot-app
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/springbootdb
+      SPRING_DATASOURCE_USERNAME: springboot
+      SPRING_DATASOURCE_PASSWORD: springboot123
+      KEYCLOAK_SERVER_URL: http://keycloak:8084
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:8084/realms/Security-Realm
+    ports:
+      - "8085:8080"
+    depends_on:
+      - keycloak
+      - postgres-db
+      - zookeeper
+      - kafka
+    volumes:
+      - ./uploads:/Users/hunnychawla/uploads
+
+  postgres-db:
+    image: postgres:latest
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+volumes:
+  postgres-data:

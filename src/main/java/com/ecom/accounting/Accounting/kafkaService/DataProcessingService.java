@@ -1,8 +1,8 @@
 package com.ecom.accounting.Accounting.kafkaService;
 
-import com.ecom.accounting.Accounting.dto.FileUploadDataKafkaDto;
 import com.ecom.accounting.Accounting.meeshoFileupload.FileUploadService;
-import com.ecom.accounting.Accounting.meeshoFileupload.MeeshoPaymentData;
+import com.ecom.accounting.dtos.FileUploadDataKafkaDto;
+import com.ecom.accounting.entities.MeeshoPaymentData;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;

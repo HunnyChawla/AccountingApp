@@ -1,14 +1,11 @@
 package com.ecom.accounting.Accounting.meeshoFileupload;
 
 import com.ecom.accounting.Accounting.constants.DbConstants;
-import com.ecom.accounting.Accounting.order365.CompleteOrderData;
 import com.ecom.accounting.Accounting.order365.CompleteOrderDataRepository;
-import com.ecom.accounting.Accounting.ordermanagement.Order;
-import com.ecom.accounting.Accounting.ordermanagement.OrderStatus;
 import com.ecom.accounting.Accounting.ordermanagement.OrdersService;
-import com.ecom.accounting.Accounting.ordermanagement.Platform;
-import com.ecom.accounting.Accounting.product.Product;
 import com.ecom.accounting.Accounting.product.ProductRepository;
+import com.ecom.accounting.entities.*;
+import com.ecom.accounting.enums.Platform;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -48,8 +45,10 @@ public class MeeshoOrderPaymentDataProcessing {
                 .findAllById(subOrderNos)
                 .stream()
                 .collect(Collectors.toMap(CompleteOrderData::getOrderId, order -> order));
+        System.out.println("existingOrdersMap size: "+existingOrdersMap.size());
 
         Map<String, Product> productMap = productRepository.findAllById(skuIds).stream().collect(Collectors.toMap(Product::getSkuId, product -> product));
+        System.out.println("productMap size: "+productMap.size());
 
         // Prepare updated or new CompleteOrderData records
         List<CompleteOrderData> completeOrdersToSave = new ArrayList<>();
@@ -62,9 +61,14 @@ public class MeeshoOrderPaymentDataProcessing {
                 updatePaymentDataInCompleteOrderData(completeOrder, meeshoPayment, productMap);
                 completeOrdersToSave.add(completeOrder);
                 meeshoPayment.setProcessingStatus(DbConstants.PROCESSED);
-            } else {
+                System.out.println("complete order updated for::" +completeOrder.getOrderId());
+            } else if(completeOrder == null) {
+                System.out.println(meeshoPayment.getSubOrderNo() + " is not found");
                 // Create new record
                 // publish a event for order details not found
+            }
+            else {
+                System.out.println(meeshoPayment.getSku() + " is not found");
             }
         });
 

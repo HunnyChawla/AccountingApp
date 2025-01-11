@@ -1,6 +1,6 @@
 package com.ecom.accounting.Accounting.kafkaService;
 
-import com.ecom.accounting.Accounting.dto.FileUploadDataKafkaDto;
+import com.ecom.accounting.dtos.FileUploadDataKafkaDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;

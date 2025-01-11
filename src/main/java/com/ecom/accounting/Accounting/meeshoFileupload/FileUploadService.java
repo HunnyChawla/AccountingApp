@@ -1,6 +1,8 @@
 package com.ecom.accounting.Accounting.meeshoFileupload;
 
-import com.ecom.accounting.Accounting.dto.FileUploadDataKafkaDto;
+import com.ecom.accounting.dtos.FileUploadDataKafkaDto;
+import com.ecom.accounting.entities.MeeshoOrderData;
+import com.ecom.accounting.entities.MeeshoPaymentData;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import jakarta.transaction.Transactional;
