@@ -39,7 +39,7 @@ public class MeeshoOrderPaymentDataProcessing {
         System.out.println("Received meeshoPaymentDataProcess Event for seller: " + sellerId);
         List<MeeshoPaymentData> meeshoPaymentData = meeshoPaymentsRepository.findByProcessingStatus(DbConstants.NOT_PROCESSED);
         List<String> subOrderNos = meeshoPaymentData.stream().map(MeeshoPaymentData::getSubOrderNo).toList();
-        List<String> skuIds = meeshoPaymentData.stream().map(MeeshoPaymentData::getSku).toList();
+        List<ProductKey> productIds = meeshoPaymentData.stream().map(paymentData -> ProductKey.builder().sellerId(paymentData.getSellerId()).skuId(paymentData.getSku()).build()).toList();
 
         Map<String, CompleteOrderData> existingOrdersMap = completeOrderDataRepository
                 .findAllById(subOrderNos)
@@ -47,7 +47,7 @@ public class MeeshoOrderPaymentDataProcessing {
                 .collect(Collectors.toMap(CompleteOrderData::getOrderId, order -> order));
         System.out.println("existingOrdersMap size: "+existingOrdersMap.size());
 
-        Map<String, Product> productMap = productRepository.findAllById(skuIds).stream().collect(Collectors.toMap(Product::getSkuId, product -> product));
+        Map<String, Product> productMap = productRepository.findAllById(productIds).stream().collect(Collectors.toMap(o -> o.getId().getSkuId(), product -> product));
         System.out.println("productMap size: "+productMap.size());
 
         // Prepare updated or new CompleteOrderData records
