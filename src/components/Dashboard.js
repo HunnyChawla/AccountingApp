@@ -7,7 +7,7 @@ import OrderCountStatusChartContainer from "./OrdersCountStatusChartContainer";
 import OrdersChartConatiner from "./OrdersChart/OrdersChartContainer";
 import { setMonth, setYear } from "../Store/slice/UserInputSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchDashboardMetrics } from "../Store/slice/dashboardMetricsSlice";
+import { fetchDashboardMetricsByYear, fetchDashboardMetricsByMonth } from "../Store/slice/dashboardMetricsSlice";
 import ProfitLossChart from "./ProfitAndLossChart";
 
 const Dashboard = () => {
@@ -17,8 +17,9 @@ const Dashboard = () => {
     useSelector((state) => state.dashboardMetrics);
 
   useEffect(() => {
-    dispatch(fetchDashboardMetrics());
-  }, [month, year]); // Re-fetch when month or year changes
+    dispatch(fetchDashboardMetricsByYear());
+    dispatch(fetchDashboardMetricsByMonth(month));
+  }, [month,year]); // Re-fetch when month or year changes
 
 
   return (
