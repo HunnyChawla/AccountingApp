@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { FaFileExcel } from 'react-icons/fa'; // Importing Excel icon from react-icons
 
-const TemplateHandler = ({ onTemplateUpload, downloadTemplateUrl }) => {
+const TemplateHandler = ({ onTemplateUpload, downloadTemplateUrl, onDownloadTemplate }) => {
   const fileInputRef = useRef();
 
   const handleUploadClick = () => {
@@ -17,11 +17,7 @@ const TemplateHandler = ({ onTemplateUpload, downloadTemplateUrl }) => {
   };
 
   const handleDownloadClick = () => {
-    if (downloadTemplateUrl) {
-      window.open(downloadTemplateUrl, '_blank');
-    } else {
-      alert('Download URL is not available.');
-    }
+    onDownloadTemplate();
   };
 
   return (

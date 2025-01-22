@@ -28,7 +28,7 @@ const FileUpload = () => {
     formData.append("fileType", fileType);
 
     try {
-      const response = await fetchWithAuth("http://localhost:8080/api/excel/upload", {
+      const response = await fetchWithAuth(process.env.REACT_APP_ACCOUNT_APP_API_URL+"/api/excel/upload", {
         method: "POST",
         body: formData,
       });

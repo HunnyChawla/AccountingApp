@@ -23,7 +23,7 @@ const Order365 = () => {
   const fetchCompleteOrderData = async (page, size) => {
     try {
       return await fetchWithAuth(
-        `http://localhost:8080/order365?page=${page}&size=${size}`
+        `${process.env.REACT_APP_ACCOUNT_APP_API_URL}/order365?page=${page}&size=${size}`
       );
     } catch (error) {
       console.error("Error fetching products:", error);

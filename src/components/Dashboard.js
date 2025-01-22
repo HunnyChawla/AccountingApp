@@ -9,18 +9,25 @@ import { setMonth, setYear } from "../Store/slice/UserInputSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDashboardMetricsByYear, fetchDashboardMetricsByMonth } from "../Store/slice/dashboardMetricsSlice";
 import ProfitLossChart from "./ProfitAndLossChart";
+import ChartOrdersCountByProduct from "./OrdersChart/ChartOrdersCountByProduct";
+import { fetchTopSellingProducts } from "../Store/slice/ordersCountByProductsSlice";
+import { fetchLeastSellingProducts } from "../Store/slice/leastSellingProductsSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const { month, year } = useSelector((state) => state.userInput);
-  const { totalOrders, totalPayments, totalLoss, totalProfit,netProfit, loading, error } =
+  const { totalOrders, totalPayments, totalLoss, totalProfit,netProfit, loading, error, yearData } =
     useSelector((state) => state.dashboardMetrics);
+  
+  const { topSellingProductsData, topSellingProductsLoading, topSellingProductsError } = useSelector((state) => state.topSellingProducts);
+  const leastSellingProdcuts = useSelector((state) => state.leastSellingProducts);
 
   useEffect(() => {
     dispatch(fetchDashboardMetricsByYear());
     dispatch(fetchDashboardMetricsByMonth(month));
+    dispatch(fetchTopSellingProducts());
+    dispatch(fetchLeastSellingProducts());
   }, [month,year]); // Re-fetch when month or year changes
-
 
   return (
     <div>
@@ -81,11 +88,14 @@ const Dashboard = () => {
         <Layout rows={1} columns={1}>
           <OrdersChartConatiner />
         </Layout>
-        <Layout rows={1} columns={1}>
+        <Layout rows={1} columns={2}>
           <OrderCountStatusChartContainer />
+          <ProfitLossChart data={yearData}></ProfitLossChart>
         </Layout>
-        <Layout rows={1} columns={1}>
-          <ProfitLossChart></ProfitLossChart>
+        <Layout rows={1} columns={2}>
+          {/* <OrdersTableWithChart></OrdersTableWithChart> */}
+          {!topSellingProductsLoading && (<ChartOrdersCountByProduct data={topSellingProductsData} title={"Top Selling Products"}></ChartOrdersCountByProduct>)}
+          <ChartOrdersCountByProduct data={leastSellingProdcuts.leastSellingProductsData} title={"Least Selling Products"}></ChartOrdersCountByProduct>
         </Layout>
       </Layout>
     </div>

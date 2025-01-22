@@ -20,9 +20,9 @@ const Products = () => {
   const fetchProducts = async (page,size,searchData) => {
     try {
       if(searchData && searchData.inputValue) {
-        return await fetchWithAuth(`http://localhost:8080/products/${searchData.inputValue}`);
+        return await fetchWithAuth(`${process.env.REACT_APP_ACCOUNT_APP_API_URL}/products/${searchData.inputValue}`);
       }
-      return await fetchWithAuth(`http://localhost:8080/products?page=${page}&size=${size}`);
+      return await fetchWithAuth(`${process.env.REACT_APP_ACCOUNT_APP_API_URL}/products?page=${page}&size=${size}`);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -30,7 +30,7 @@ const Products = () => {
 
   const handleAddProduct = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/products", {
+      const response = await fetchWithAuth(process.env.REACT_APP_ACCOUNT_APP_API_URL+"/api/products", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const Products = () => {
 
   const handleEditProduct = async (updatedProdct) => {
     try {
-      const response = await fetchWithAuth(`http://localhost:8080/products`, {
+      const response = await fetchWithAuth(`${process.env.REACT_APP_ACCOUNT_APP_API_URL}/products`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +76,7 @@ const Products = () => {
       formData.append("file", file); // Append files to FormData
   
       try {
-        const response = await fetchWithAuth("http://localhost:8087/api/product/upload", {
+        const response = await fetchWithAuth(process.env.REACT_APP_ACCOUNT_BATCH_HOST+"/api/product/upload", {
           method: "POST",
           body: formData,
         });
@@ -101,10 +101,25 @@ const Products = () => {
       }
     };
 
+    const handleDownload = async () => {
+      const response = await fetchWithAuth(process.env.REACT_APP_ACCOUNT_BATCH_HOST+"/job/run/exportProduct");
+      if (response.ok) {
+        const blob = await response.blob();
+        const link = document.createElement('a');
+        const url = window.URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'products.xlsx'; // Set filename and extension
+        link.click();
+        window.URL.revokeObjectURL(url); // Revoke object URL after the download
+      } else {
+        console.error('Failed to fetch file');
+      }
+    }
+
   return (
     <div style={styles.container}>
     <TemplateHandler
-      downloadTemplateUrl={"/asset/Product_Template.xlsx"}
+      onDownloadTemplate={handleDownload}
       onTemplateUpload={handleUpload}
     ></TemplateHandler>
       {/* Products Table */}
@@ -117,7 +132,7 @@ const Products = () => {
       showEditAction={true}
       handleEditAction={handleEditProduct}
       handleDeleteAction={null}
-      tableHeaders={["SKU", "Product Name", "Cost"]}
+      tableHeaders={["SKU", "Size", "Product Name", "Cost"]}
       searchMetaData={{
         inputPlaceholder: "SKU ID",
         showTextSearch: true

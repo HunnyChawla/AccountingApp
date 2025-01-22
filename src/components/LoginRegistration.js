@@ -9,6 +9,7 @@ const LoginRegistration = () => {
   const [loginStatus, setLoginStatus] = useState(null); // For displaying login status messages
   const navigate = useNavigate(); // Initialize navigate
   const dispatch = useDispatch();
+  const authUrl = process.env.REACT_APP_ACCOUNT_AUTH;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,7 +20,8 @@ const LoginRegistration = () => {
 
     if (isLogin) {
       try {
-        const response = await fetch(`http://localhost:8081/auth/login?username=${encodeURIComponent(formData.username)}&password=${encodeURIComponent(formData.password)}`, {
+        console.log(authUrl);
+        const response = await fetch(`${authUrl}/auth/login?username=${encodeURIComponent(formData.username)}&password=${encodeURIComponent(formData.password)}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

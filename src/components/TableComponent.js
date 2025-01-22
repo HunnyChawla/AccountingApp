@@ -32,6 +32,7 @@ const TableComponent = ({
 
   useEffect(() => {
     console.log("searchData", searchData);
+    console.log("tableData", tableData);
     if (!tableData) {
       loadData(currentPage, rowsPerPage);
     } else {

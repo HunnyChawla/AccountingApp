@@ -1,5 +1,5 @@
-import React from "react";
-import { Bar } from "react-chartjs-2";
+import React from 'react';
+import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -8,34 +8,34 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
 
-// Register the necessary components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const ProfitLossChart = () => {
-  // Sample data
-  const data = {
-    labels: ["January", "February", "March", "April"], // X-axis labels
+const ProfitLossChart = ({ data }) => {
+  // Extract labels (month/year) and datasets
+  const labels = data.map(
+    (item) => `${item.month}/${item.year}`
+  );
+
+  const chartData = {
+    labels,
     datasets: [
       {
-        label: "Profit",
-        data: [5000, 7000, 8000, 6000], // Profit data
-        backgroundColor: "rgba(75, 192, 192, 0.6)", // Bar color for Profit
-        borderWidth: 0, // No border
+        label: 'Total Profit',
+        data: data.map((item) => item.totalProfit),
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
       },
       {
-        label: "Loss",
-        data: [2000, 3000, 2500, 4000], // Loss data
-        backgroundColor: "rgba(255, 99, 132, 0.6)", // Bar color for Loss
-        borderWidth: 0, // No border
+        label: 'Total Loss',
+        data: data.map((item) => item.totalLoss),
+        backgroundColor: 'rgba(255, 99, 132, 0.6)',
       },
       {
-        label: "Net Profit",
-        data: [3000, 4000, 5500, 2000], // Net Profit data
-        backgroundColor: "rgba(54, 162, 235, 0.6)", // Bar color for Net Profit
-        borderWidth: 0, // No border
-      },
+        label: 'Net Profit',
+        data: data.map((item) => item.totalProfit + item.totalLoss),
+        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+      }
     ],
   };
 
@@ -43,36 +43,36 @@ const ProfitLossChart = () => {
     responsive: true,
     plugins: {
       legend: {
-        position: "top", // Position of the legend
+        position: 'top',
       },
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            let value = context.raw;
-            return `${context.dataset.label}: $${value}`;
-          },
-        },
+      title: {
+        display: true,
+        text: 'Monthly Profit/Loss and Net Profit',
       },
     },
     scales: {
       x: {
         title: {
           display: true,
-          text: "Months", // Label for X-axis
+          text: 'Month/Year',
         },
-        stacked: false, // Disable stacking for clustered bars
+        grid: {
+          display: false,
+        },
       },
       y: {
         title: {
           display: true,
-          text: "Amount (in USD)", // Label for Y-axis
+          text: 'Amount(₹)',
         },
-        beginAtZero: true, // Ensure Y-axis starts at zero
+        grid: {
+          display: false,
+        },
       },
     },
   };
 
-  return <Bar data={data} options={options} />;
+  return <Bar data={chartData} options={options} />;
 };
 
 export default ProfitLossChart;

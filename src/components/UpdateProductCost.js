@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { fetchWithAuth } from "../Util";
 
 const UpdateProductCost = () => {
   const [skuId, setSkuId] = useState("");
@@ -14,7 +15,7 @@ const UpdateProductCost = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/product/update", {
+      const response = await fetchWithAuth(process.env.REACT_APP_ACCOUNT_APP_API_URL+"/api/product/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

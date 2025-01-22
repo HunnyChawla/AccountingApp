@@ -9,7 +9,7 @@ const Orders = () => {
   const handleSearch = async () => {
     try {
       const response = await fetchWithAuth(
-        `http://localhost:8080/orders/${searchText}`,
+        `${process.env.REACT_APP_ACCOUNT_APP_API_URL}/orders/${searchText}`,
         {
           method: "GET",
         }
@@ -29,7 +29,7 @@ const Orders = () => {
 
   const fetchProductData = async () => {
     return await fetchWithAuth(
-        `http://localhost:8080/orders/${searchText}`,
+        `${process.env.REACT_APP_ACCOUNT_APP_API_URL}/orders/${searchText}`,
         {
           method: "GET",
         }
