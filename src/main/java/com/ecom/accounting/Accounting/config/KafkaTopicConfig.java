@@ -27,4 +27,8 @@ public class KafkaTopicConfig {
     public NewTopic messhoProcessPaymentsData() {
         return new NewTopic("meesho.payment.data.process", 1, (short) 1);
     }
+    @Bean
+    public NewTopic dashboardUpdate() {
+        return new NewTopic("dashboard.update", 1, (short) 1);
+    }
 }

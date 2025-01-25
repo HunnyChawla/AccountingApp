@@ -5,6 +5,7 @@ import com.ecom.accounting.dtos.OrderCountDto;
 import com.ecom.accounting.entities.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.ecom.accounting.repositories.OrdersRepository;
 
 import java.util.*;
 

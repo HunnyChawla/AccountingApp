@@ -35,7 +35,7 @@ public class CompleteOrderDataController {
     }
 
     @GetMapping("/count")
-    public ResponseEntity<Long> getOrdersCount(@AuthenticationPrincipal Jwt token, @RequestParam(required = false) Long month, @RequestParam Long year) {
+    public ResponseEntity<Long> getOrdersCount(@AuthenticationPrincipal Jwt token, @RequestParam(required = false) Integer month, @RequestParam Integer year) {
         String sellerId = TokenService.getUserIdFromToken(token);
         Long ordersCount = null;
         if(month !=null && year != null) {

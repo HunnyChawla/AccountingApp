@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 public class ProductMapper {
     public static ProductResponseDto toProductResponseDto(Product product) {
         ProductResponseDto productResponseDto = new ProductResponseDto();
-        productResponseDto.setSku(product.getId().getSkuId());
+        productResponseDto.setSku(product.getSkuId());
+        productResponseDto.setSize(product.getSize());
         productResponseDto.setCost(product.getCost());
         productResponseDto.setName(product.getProductName());
         return productResponseDto;
@@ -33,7 +34,7 @@ public class ProductMapper {
 
     public static ProductRequestDto toProductRequestDto(Product product) {
         ProductRequestDto productRequestDto = new ProductRequestDto();
-        productRequestDto.setSku(product.getId().getSkuId());
+        productRequestDto.setSku(product.getSkuId());
         productRequestDto.setCost(product.getCost());
         productRequestDto.setName(product.getProductName());
         return productRequestDto;
@@ -41,7 +42,7 @@ public class ProductMapper {
 
     public static Product toProduct(ProductRequestDto productRequestDto) {
         Product product = new Product();
-        product.setId(ProductKey.builder().skuId(productRequestDto.getSku()).build());
+        product.setSkuId(productRequestDto.getSku());
         product.setCost(productRequestDto.getCost());
         product.setProductName(productRequestDto.getName());
         return product;

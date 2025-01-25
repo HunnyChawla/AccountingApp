@@ -1,5 +1,6 @@
 package com.ecom.accounting.Accounting.kafkaService;
 
+import com.ecom.accounting.dtos.DashboardUpdateKafkaDto;
 import com.ecom.accounting.dtos.FileUploadDataKafkaDto;
 import com.ecom.accounting.entities.MeeshoPaymentData;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -28,6 +29,11 @@ public class KafkaProducerConfig {
     @Bean
     public KafkaTemplate<String, FileUploadDataKafkaDto> fileUploadDataKafkaDtoKafkaTemplate() {
         return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerProps(FileUploadDataSerializer.class)));
+    }
+
+    @Bean
+    public KafkaTemplate<String, DashboardUpdateKafkaDto> dashboardUpdateKafkaDtoKafkaTemplate() {
+        return new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(producerProps(DashboardUpdateKafkaDataSerializer.class)));
     }
 
     @Bean
