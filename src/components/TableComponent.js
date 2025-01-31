@@ -17,6 +17,9 @@ const TableComponent = ({
   showEditAction,
   showDeleteAction,
   searchMetaData,
+  customColumnRenderer,
+  showCustomComponent,
+  customComponent
 }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -129,9 +132,12 @@ const TableComponent = ({
               <tbody>
                 {data.map((item, index) => (
                   <tr key={index} style={styles.tableRow}>
-                    {Object.values(item).map((value, i) => (
-                      <td key={i} style={styles.tableCell}>
-                        {value}
+                    {Object.entries(item).map(([key, value]) => (
+                      <td key={key} style={styles.tableCell}>
+                        {console.log(key, value)}
+                        {customColumnRenderer && customColumnRenderer[key]
+                        ? customColumnRenderer[key](value) // Custom render logic
+                        : value}
                       </td>
                     ))}
                     {(showEditAction || showDeleteAction) && (
@@ -154,6 +160,7 @@ const TableComponent = ({
                         )}
                       </td>
                     )}
+                    {showCustomComponent && (<td>{customComponent}</td>)}
                   </tr>
                 ))}
               </tbody>
@@ -262,6 +269,8 @@ const styles = {
   tableCell: {
     padding: "10px",
     textAlign: "center",
+    borderRight: "1px solid #ddd",
+    borderLeft: "1px solid #ddd"
   },
   editButton: {
     backgroundColor: "#28A745",

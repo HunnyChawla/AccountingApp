@@ -48,9 +48,9 @@ const Sidebar = () => {
           </Link>
         </li>
         <li style={styles.menuItem}>
-          <a href="/payments" style={styles.link}>
+          <a href="/returns" style={styles.link}>
             <FaMoneyBillWave style={styles.icon} />
-            Payments
+            Returns
           </a>
         </li>
         <li style={styles.menuItem}>

@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import Order365 from "./components/Order365";
 import NewDashboard from "./components/NewDashboard";
 import { AlertProvider } from "./components/AlertManager";
+import Returns from "./components/Returns";
 
 const App = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -67,6 +68,14 @@ const App = () => {
                   element={
                     <ProtectedRoute>
                       <Order365 />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/returns"
+                  element={
+                    <ProtectedRoute>
+                      <Returns />
                     </ProtectedRoute>
                   }
                 />
